@@ -21,6 +21,8 @@ namespace Шашки
         List<Checker> who_must_eat=new List<Checker>();//шашки, которые могут рубить
         Checker selected_checker = null;//выбранная в данный момент шашка
         Panel selectedpanel = null;//ячейка, на которой находится выбранная в данный момент шашка
+        string GameId;
+        string FirstPlayerCode;
         public Form1()
         {
             InitializeComponent();
@@ -38,6 +40,11 @@ namespace Шашки
             CheckersCreating();
 
             var game = await BackendService.GameCreate();
+            GameId = game["id"];
+            FirstPlayerCode = game["firstPlayerCode"];
+            //register second player (opponent)
+            //start game
+
 
             if ((new Random()).Next(2) % 2 == 0)
                 Opponent();

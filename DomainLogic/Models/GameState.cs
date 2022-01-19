@@ -2,6 +2,7 @@
 {
     public enum GameState
     {
+        Created,
         Running,
         Finished
     }

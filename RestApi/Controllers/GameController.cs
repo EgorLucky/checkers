@@ -29,5 +29,39 @@ namespace RestApi.Controllers
 
             return Ok(game);
         }
+
+        [HttpGet("getRegistrationStatus")]
+        public async Task<IActionResult> GetRegistrationStatus([FromQuery] Guid gameId)
+        {
+            var startGameResult = await _service.GetRegistrationStatus(gameId);
+
+            if (startGameResult.Success)
+                return Ok(startGameResult);
+
+            return BadRequest(startGameResult);
+        }
+
+        [HttpPost("registerSecondPlayer")]
+        public async Task<IActionResult> RegisterSecondPlayer([FromBody] Guid gameId)
+        {
+            var registerSecondUserResult = await _service.RegisterSecondUser(gameId);
+
+            if (registerSecondUserResult.Success)
+                return Ok(registerSecondUserResult);
+
+            return BadRequest(registerSecondUserResult);
+        }
+
+        [HttpPost("start")]
+        public async Task<IActionResult> Start([FromQuery]Guid firstPlayerCode)
+        {
+            var startGameResult = await _service.Start(firstPlayerCode);
+
+            if(startGameResult.Success)
+                return Ok(startGameResult);
+
+            return BadRequest(startGameResult);
+        }
+
     }
 }

@@ -13,6 +13,8 @@ namespace DomainLogic.Models
         public DateTimeOffset? StartDateTime { get; set; }
         public DateTimeOffset? FinishDateTime { get; set; }
         public GameState? State { get; set; }
-
+        public AwaitableMove? AwaitableMove { get; set; }
+        public Guid? FirstPlayerCode { get; internal set; }
+        public Guid? SecondPlayerCode { get; internal set; }
     }
 }

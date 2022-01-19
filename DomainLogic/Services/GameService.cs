@@ -68,6 +68,18 @@ namespace DomainLogic.Services
             return new GameRegisterSecondUserResult(Code: game.SecondPlayerCode);
         }
 
+        public async Task<GameStartResult> StartWithBot(Guid firstPlayerCode)
+        {
+            var startResult = await Start(firstPlayerCode);
+
+            if(startResult.Success && startResult.AwaitableMove == AwaitableMove.SecondPlayer)
+            {
+                //notify bot
+            }
+
+            return startResult;
+        }
+
         public async Task<GameStartResult> Start(Guid firstPlayerCode)
         {
             var game = await _repository.Get(new Filters.GameGetFilter(FirstPlayerCode: firstPlayerCode));

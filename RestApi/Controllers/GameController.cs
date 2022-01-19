@@ -63,5 +63,16 @@ namespace RestApi.Controllers
             return BadRequest(startGameResult);
         }
 
+        [HttpPost("startWithBot")]
+        public async Task<IActionResult> StartWithBot([FromQuery] Guid firstPlayerCode)
+        {
+            var startGameResult = await _service.StartWithBot(firstPlayerCode);
+
+            if (startGameResult.Success)
+                return Ok(startGameResult);
+
+            return BadRequest(startGameResult);
+        }
+
     }
 }

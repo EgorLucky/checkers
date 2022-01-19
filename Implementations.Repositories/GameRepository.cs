@@ -22,7 +22,7 @@ namespace Implementations.Repositories
             if(filter.Id != null)
                 return Games.Where(g => g.Id == filter.Id).FirstOrDefault();
 
-            return Games.Where(g => g.FirstPlayerCode == filter.FirstGamerCode).FirstOrDefault();
+            return Games.Where(g => g.FirstPlayerCode == filter.FirstPlayerCode).FirstOrDefault();
         }
 
         public async Task Update(Game game)

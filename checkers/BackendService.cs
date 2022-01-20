@@ -30,5 +30,24 @@ namespace Шашки
                 .Select(s => new KeyValuePair<string, string>(s.Name, s.Value.ToString()))
                 .ToDictionary(s => s.Key, s => s.Value);
         }
+
+        public static async Task<Dictionary<string, string>> GameCreateWithBot()
+        {
+            var response = default(byte[]);
+
+            using (var client = new WebClient())
+            {
+                response = await client.UploadDataTaskAsync(new Uri(HostUri + "/Game/CreateWithBot"), new byte[] { });
+            }
+
+            var responseString = Encoding.UTF8.GetString(response);
+
+            var json = JObject.Parse(responseString);
+
+            return json
+                .Properties()
+                .Select(s => new KeyValuePair<string, string>(s.Name, s.Value.ToString()))
+                .ToDictionary(s => s.Key, s => s.Value);
+        }
     }
 }

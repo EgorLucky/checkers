@@ -1,5 +1,6 @@
 using DomainLogic.Repositories;
 using DomainLogic.Services;
+using Implementations.Mq;
 using Implementations.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,7 +32,11 @@ namespace RestApi
         {
             services
                 .AddTransient<GameService>()
-                .AddTransient<IGameRepository, GameRepository>();
+                .AddTransient<IGameRepository, GameRepository>()
+                .AddSingleton<IBotNotifier, BotQueueService>()
+                .AddSingleton<Bot>()
+                .AddSingleton<IBotRepository, BotRepository>()
+                .AddHttpClient<IGameServiceClient, GameServiceHttpClient>(c => c.BaseAddress = new Uri("https://localhost:44388"));
 
 
             services.AddControllers();

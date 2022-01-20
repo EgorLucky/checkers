@@ -39,12 +39,12 @@ namespace Шашки
                 };
             CheckersCreating();
 
-            var game = await BackendService.GameCreate();
+            var game = await BackendService.GameCreateWithBot();
             GameId = game["id"];
             FirstPlayerCode = game["firstPlayerCode"];
-            //register second player (opponent)
+            //check second player (opponent) registered
             //start game
-
+            //check who moves
 
             if ((new Random()).Next(2) % 2 == 0)
                 Opponent();

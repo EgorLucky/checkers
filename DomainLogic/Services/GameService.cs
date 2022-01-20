@@ -11,11 +11,14 @@ namespace DomainLogic.Services
 {
     public class GameService
     {
-        public readonly IGameRepository _repository;
+        private readonly IGameRepository _repository;
+        private readonly IBotNotifier _botNotifier;
 
-        public GameService(IGameRepository repository)
+
+        public GameService(IGameRepository repository, IBotNotifier botNotifier)
         {
             _repository = repository;
+            _botNotifier = botNotifier;
         }
 
         public async Task<GameCreateResult> Create()
@@ -26,12 +29,18 @@ namespace DomainLogic.Services
                 CreateDateTime = DateTimeOffset.Now,
                 FirstPlayerCode = Guid.NewGuid(),
                 State = GameState.Created
-                //SecondPlayerCode = Guid.NewGuid()
             };
 
             await _repository.Create(game);
 
             return new GameCreateResult(game.Id, game.FirstPlayerCode.Value);
+        }
+
+        public async Task<GameCreateResult> CreateWithBot()
+        {
+            var createResult = await Create();
+            await _botNotifier.RegisterNotify(createResult.Id);
+            return createResult;
         }
 
         public async Task<GameGetRegistrationStatusResult> GetRegistrationStatus(Guid gameId)
@@ -47,17 +56,17 @@ namespace DomainLogic.Services
                 SecondUserRegistred: game.SecondPlayerCode != null);
         }
 
-        public async Task<GameRegisterSecondUserResult> RegisterSecondUser(Guid gameId)
+        public async Task<GameRegisterSecondPlayerResult> RegisterSecondPlayer(Guid gameId)
         {
             var game = await _repository.Get(new Filters.GameGetFilter(Id: gameId));
 
             if (game == null)
-                return new GameRegisterSecondUserResult(
+                return new GameRegisterSecondPlayerResult(
                     Success: false,
                     Message: "game not found");
 
             if (game.SecondPlayerCode != null)
-                return new GameRegisterSecondUserResult(
+                return new GameRegisterSecondPlayerResult(
                     Success: false,
                     Message: "second user already registred");
 
@@ -65,7 +74,7 @@ namespace DomainLogic.Services
 
             await _repository.Update(game);
 
-            return new GameRegisterSecondUserResult(Code: game.SecondPlayerCode);
+            return new GameRegisterSecondPlayerResult(Code: game.SecondPlayerCode);
         }
 
         public async Task<GameStartResult> StartWithBot(Guid firstPlayerCode)
@@ -108,7 +117,8 @@ namespace DomainLogic.Services
 
             await _repository.Update(game);
 
-            return new GameStartResult(AwaitableMove: game.AwaitableMove);
+            return new GameStartResult(
+                AwaitableMove: game.AwaitableMove);
         }
 
     }

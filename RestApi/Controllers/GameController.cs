@@ -30,6 +30,14 @@ namespace RestApi.Controllers
             return Ok(game);
         }
 
+        [HttpPost("createWithBot")]
+        public async Task<IActionResult> CreateWithBot()
+        {
+            var game = await _service.CreateWithBot();
+
+            return Ok(game);
+        }
+
         [HttpGet("getRegistrationStatus")]
         public async Task<IActionResult> GetRegistrationStatus([FromQuery] Guid gameId)
         {
@@ -44,7 +52,7 @@ namespace RestApi.Controllers
         [HttpPost("registerSecondPlayer")]
         public async Task<IActionResult> RegisterSecondPlayer([FromBody] Guid gameId)
         {
-            var registerSecondUserResult = await _service.RegisterSecondUser(gameId);
+            var registerSecondUserResult = await _service.RegisterSecondPlayer(gameId);
 
             if (registerSecondUserResult.Success)
                 return Ok(registerSecondUserResult);

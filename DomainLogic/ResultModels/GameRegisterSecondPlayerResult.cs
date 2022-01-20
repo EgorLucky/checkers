@@ -2,7 +2,7 @@
 
 namespace DomainLogic.ResultModels
 {
-    public record GameRegisterSecondUserResult(
+    public record GameRegisterSecondPlayerResult(
         bool Success = true,
         string Message = "",
         Guid? Code = null);

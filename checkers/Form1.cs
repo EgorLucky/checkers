@@ -56,10 +56,39 @@ namespace Шашки
                     await Task.Delay(100);
             }
             //start game
+            var startRequestResponse = await BackendService.GameStartWithBot(FirstPlayerCode);
+
+            AwaitableMove = startRequestResponse["awaitableMove"];
+
             //check who moves
 
             if (AwaitableMove == "SecondPlayer")
-                Opponent();
+            {
+                //awaiting opponent move
+                await WaitForOpponentMove();
+                //Opponent(); 
+            }
+            else
+            {
+
+            }
+        }
+
+        private async Task WaitForOpponentMove()
+        {
+            var opponentMoved = false;
+            this.Text = "Waiting for opponent move";
+
+            while (opponentMoved == false)
+            {
+                await GetState();
+
+                opponentMoved = AwaitableMove == "FirstPlayer";
+                if (opponentMoved == false)
+                    await Task.Delay(100);
+            }
+
+            this.Text = "Waiting for your move";
         }
 
         async Task GetState() 

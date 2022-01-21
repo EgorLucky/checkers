@@ -21,14 +21,7 @@ namespace Шашки
                 response = await client.UploadDataTaskAsync(new Uri(HostUri + "/Game/Create"), new byte[] { });
             }
 
-            var responseString = Encoding.UTF8.GetString(response);
-
-            var json = JObject.Parse(responseString);
-
-            return json
-                .Properties()
-                .Select(s => new KeyValuePair<string, string>(s.Name, s.Value.ToString()))
-                .ToDictionary(s => s.Key, s => s.Value);
+            return ToDictionary(response);
         }
 
         public static async Task<Dictionary<string, string>> GameCreateWithBot()
@@ -40,14 +33,7 @@ namespace Шашки
                 response = await client.UploadDataTaskAsync(new Uri(HostUri + "/Game/CreateWithBot"), new byte[] { });
             }
 
-            var responseString = Encoding.UTF8.GetString(response);
-
-            var json = JObject.Parse(responseString);
-
-            return json
-                .Properties()
-                .Select(s => new KeyValuePair<string, string>(s.Name, s.Value.ToString()))
-                .ToDictionary(s => s.Key, s => s.Value);
+            return ToDictionary(response);
         }
 
         internal static async Task<Dictionary<string, string>> GameGetInfo(string gameId)
@@ -59,7 +45,34 @@ namespace Шашки
                 response = await client.DownloadDataTaskAsync(HostUri + $"/Game/getInfo?gameId={gameId}");
             }
 
-            var responseString = Encoding.UTF8.GetString(response);
+            return ToDictionary(response);
+        }
+
+        internal static async Task<Dictionary<string, string>> GameStartWithBot(string gameId)
+        {
+            var response = default(byte[]);
+
+            gameId = $"\"{gameId}\"";
+            try
+            {
+                using (var client = new WebClient())
+                {
+                    client.Headers["Content-Type"] = "application/json";
+                    response = await client.UploadDataTaskAsync(HostUri + $"/Game/startWithBot", Encoding.UTF8.GetBytes(gameId));
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            return ToDictionary(response);
+        }
+
+
+        static Dictionary<string, string> ToDictionary(byte[] bytes)
+        {
+            var responseString = Encoding.UTF8.GetString(bytes);
 
             var json = JObject.Parse(responseString);
 

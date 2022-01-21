@@ -72,7 +72,7 @@ namespace RestApi.Controllers
         }
 
         [HttpPost("startWithBot")]
-        public async Task<IActionResult> StartWithBot([FromQuery] Guid firstPlayerCode)
+        public async Task<IActionResult> StartWithBot([FromBody] Guid firstPlayerCode)
         {
             var startGameResult = await _service.StartWithBot(firstPlayerCode);
 

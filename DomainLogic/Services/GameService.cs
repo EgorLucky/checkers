@@ -43,17 +43,18 @@ namespace DomainLogic.Services
             return createResult;
         }
 
-        public async Task<GameGetRegistrationStatusResult> GetRegistrationStatus(Guid gameId)
+        public async Task<GameGetInfoResult> GetInfo(Guid gameId)
         {
             var game = await _repository.Get(new Filters.GameGetFilter(Id: gameId));
 
             if (game == null)
-                return new GameGetRegistrationStatusResult(
+                return new GameGetInfoResult(
                     Success: false, 
                     Message: "game not found");
 
-            return new GameGetRegistrationStatusResult(
-                SecondUserRegistred: game.SecondPlayerCode != null);
+            return new GameGetInfoResult(
+                State: game.State,
+                AwaitableMove: game.AwaitableMove);
         }
 
         public async Task<GameRegisterSecondPlayerResult> RegisterSecondPlayer(Guid gameId)

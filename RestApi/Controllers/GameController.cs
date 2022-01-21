@@ -38,10 +38,10 @@ namespace RestApi.Controllers
             return Ok(game);
         }
 
-        [HttpGet("getRegistrationStatus")]
+        [HttpGet("getInfo")]
         public async Task<IActionResult> GetRegistrationStatus([FromQuery] Guid gameId)
         {
-            var startGameResult = await _service.GetRegistrationStatus(gameId);
+            var startGameResult = await _service.GetInfo(gameId);
 
             if (startGameResult.Success)
                 return Ok(startGameResult);
@@ -61,7 +61,7 @@ namespace RestApi.Controllers
         }
 
         [HttpPost("start")]
-        public async Task<IActionResult> Start([FromQuery]Guid firstPlayerCode)
+        public async Task<IActionResult> Start([FromQuery] Guid firstPlayerCode)
         {
             var startGameResult = await _service.Start(firstPlayerCode);
 

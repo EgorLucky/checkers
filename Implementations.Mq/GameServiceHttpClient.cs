@@ -18,9 +18,15 @@ namespace Implementations.Mq
 
         public async Task<GameRegisterSecondPlayerResult> RegisterSecondPlayer(Guid gameId)
         {
-            var response = await _client.PostAsync("/game/registerSecondPlayer", new StringContent(gameId.ToString()));
-            var responseString = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<GameRegisterSecondPlayerResult>(responseString);
+            var stringBody = $"\"{gameId}\"";
+            var response = await _client.PostAsync("/Game/registerSecondPlayer", new StringContent(stringBody, System.Text.Encoding.UTF8, "application/json"));
+            if (response.IsSuccessStatusCode)
+            {
+                var responseString = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<GameRegisterSecondPlayerResult>(responseString);
+            }
+            else
+                throw new Exception();
         }
     }
 }

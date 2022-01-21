@@ -34,6 +34,7 @@ namespace RestApi
             services
                 .AddTransient<GameService>()
                 .AddTransient<IGameRepository, GameRepository>()
+                .AddTransient<MoveManager>()
                 .AddSingleton<IBotNotifier, BotQueueService>()
                 .AddSingleton<Bot>()
                 .AddSingleton<IBotRepository, BotRepository>()

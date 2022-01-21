@@ -13,12 +13,16 @@ namespace DomainLogic.Services
     {
         private readonly IGameRepository _repository;
         private readonly IBotNotifier _botNotifier;
+        private readonly MoveManager _moveManager;
 
-
-        public GameService(IGameRepository repository, IBotNotifier botNotifier)
+        public GameService(
+            IGameRepository repository, 
+            IBotNotifier botNotifier,
+            MoveManager moveManager)
         {
             _repository = repository;
             _botNotifier = botNotifier;
+            _moveManager = moveManager;
         }
 
         public async Task<GameCreateResult> Create()
@@ -118,6 +122,8 @@ namespace DomainLogic.Services
             game.State = GameState.Running;
 
             await _repository.Update(game);
+
+            var board = await _moveManager.InitializeHistory(game.Id);
 
             return new GameStartResult(
                 AwaitableMove: game.AwaitableMove);

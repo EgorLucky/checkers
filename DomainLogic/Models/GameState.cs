@@ -3,6 +3,7 @@
     public enum GameState
     {
         Created,
+        AllPlayersRegistred,
         Running,
         Finished
     }

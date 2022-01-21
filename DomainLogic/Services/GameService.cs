@@ -72,6 +72,7 @@ namespace DomainLogic.Services
                     Message: "second user already registred");
 
             game.SecondPlayerCode = Guid.NewGuid();
+            game.State = GameState.AllPlayersRegistred;
 
             await _repository.Update(game);
 

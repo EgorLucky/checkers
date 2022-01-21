@@ -23,6 +23,8 @@ namespace Шашки
         Panel selectedpanel = null;//ячейка, на которой находится выбранная в данный момент шашка
         string GameId;
         string FirstPlayerCode;
+        string GameState;
+        string AwaitableMove;
         public Form1()
         {
             InitializeComponent();
@@ -43,11 +45,28 @@ namespace Шашки
             GameId = game["id"];
             FirstPlayerCode = game["firstPlayerCode"];
             //check second player (opponent) registered
+            var opponentIsRegistred = false;
+
+            while (opponentIsRegistred == false)
+            { 
+                await GetState();
+
+                opponentIsRegistred = GameState == "AllPlayersRegistred";
+                if (opponentIsRegistred == false)
+                    await Task.Delay(100);
+            }
             //start game
             //check who moves
 
-            if ((new Random()).Next(2) % 2 == 0)
+            if (AwaitableMove == "SecondPlayer")
                 Opponent();
+        }
+
+        async Task GetState() 
+        {
+            var gameInfo = await BackendService.GameGetInfo(GameId);
+            GameState = gameInfo["state"];
+            AwaitableMove = gameInfo["awaitableMove"];
         }
 
         private void CheckersCreating()//инициализация шашек

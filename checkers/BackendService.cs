@@ -49,5 +49,24 @@ namespace Шашки
                 .Select(s => new KeyValuePair<string, string>(s.Name, s.Value.ToString()))
                 .ToDictionary(s => s.Key, s => s.Value);
         }
+
+        internal static async Task<Dictionary<string, string>> GameGetInfo(string gameId)
+        {
+            var response = default(byte[]);
+
+            using (var client = new WebClient())
+            {
+                response = await client.DownloadDataTaskAsync(HostUri + $"/Game/getInfo?gameId={gameId}");
+            }
+
+            var responseString = Encoding.UTF8.GetString(response);
+
+            var json = JObject.Parse(responseString);
+
+            return json
+                .Properties()
+                .Select(s => new KeyValuePair<string, string>(s.Name, s.Value.ToString()))
+                .ToDictionary(s => s.Key, s => s.Value);
+        }
     }
 }

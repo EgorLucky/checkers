@@ -123,7 +123,7 @@ namespace DomainLogic.Services
 
             await _repository.Update(game);
 
-            var board = await _moveManager.InitializeHistory(game.Id);
+            var board = await _moveManager.InitializeHistory(game);
 
             return new GameStartResult(
                 AwaitableMove: game.AwaitableMove);

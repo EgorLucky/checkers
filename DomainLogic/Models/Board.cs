@@ -65,15 +65,31 @@ namespace DomainLogic.Models
 
         public Cell this[BoardHorizontalCoordinates horizontal, BoardVerticalCoordinates vertical] 
         {
-            get => Cells[new CellCordinate(horizontal, vertical)];
+            get => Cells[new CellCoordinate(horizontal, vertical)];
 
-            set => Cells[new CellCordinate(horizontal, vertical)] = value;
+            set => Cells[new CellCoordinate(horizontal, vertical)] = value;
         }
 
-        public Dictionary<CellCordinate, Cell> Cells { get; set; } = new Dictionary<CellCordinate, Cell>();
+        public Cell this[CellCoordinate coordinate]
+        {
+            get => Cells[coordinate];
+
+            set => Cells[coordinate] = value;
+        }
+
+        public Dictionary<CellCoordinate, Cell> Cells { get; set; } = new Dictionary<CellCoordinate, Cell>();
     }
 
-    public record CellCordinate(
-        BoardHorizontalCoordinates Horizontal, 
-        BoardVerticalCoordinates Vertical);
+    public record CellCoordinate(
+        BoardHorizontalCoordinates Horizontal,
+        BoardVerticalCoordinates Vertical)
+    {
+        public static implicit operator CellCoordinate(
+            (BoardHorizontalCoordinates, BoardVerticalCoordinates) coordinateTuple) 
+                    => new CellCoordinate(coordinateTuple.Item1, coordinateTuple.Item2);
+
+        public static implicit operator (BoardHorizontalCoordinates, BoardVerticalCoordinates)
+                                        (CellCoordinate coordinate) =>
+                                        (coordinate.Horizontal, coordinate.Vertical);                                                
+    };
 }

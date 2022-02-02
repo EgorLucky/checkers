@@ -443,7 +443,7 @@ namespace Шашки
             var co = Coordinate();
             int i = co[0], j = co[1];
             List<Panel> result = new List<Panel>();
-            if (!queen)//если шашка дамка
+            if (!queen)//если шашка не дамка
             {
                 if (color == Col.Red) //если цвет красный
                 {

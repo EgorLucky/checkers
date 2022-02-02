@@ -43,13 +43,27 @@ namespace DomainLogic.Services
                                 .ToList();
 
             var result = new List<PossibleMove>();
+            var captureMovesFound = false;
 
             foreach(var cellWithChecker in cellsWithCheckers)
             {
-                //search capture moves
-                //if found add to result and continue
-                //else found other moves
-                //add founded to result
+                ICheckerMoveSearcher searcher = 
+                            cellWithChecker.Value.Checker.Role == CheckerRole.Men
+                                ? new MenCheckerMoveSearcher()
+                                : new KingCheckerMoveSearcher();
+                
+                var captureMoves = searcher.SearchCaptureMoves(cellWithChecker.Key, board);
+
+                if(captureMoves.Count > 0)
+                {
+                    result.AddRange(captureMoves);
+                    captureMovesFound = true;
+                }
+                else if(captureMovesFound == false)
+                {
+                    var simpleMoves = searcher.SearchSimpleMoves(cellWithChecker.Key, board);
+                    result.AddRange(captureMoves);
+                }
             }
 
             return result;

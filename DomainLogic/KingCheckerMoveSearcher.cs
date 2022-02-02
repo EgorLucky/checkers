@@ -155,37 +155,64 @@ namespace DomainLogic
         //    )
 
 
-        public List<PossibleMove> SearchSimpleMoves(CellCoordinate сoordinate, Board board)
+        public List<PossibleMove> SearchSimpleMoves(CellCoordinate coordinate, Board board)
         {
-            //for (int I = i - 1, J = j + 1; I >= 0 && J < 8; I--, J++)//влево вверх
-            //{
-            //    if (Board[I, J].Controls.Count != 0)
-            //        break;
-            //    else
-            //        result.Add(Board[I, J]);
-            //}
-            //for (int I = i + 1, J = j + 1; I < 8 && J < 8; I++, J++)//вправо вверх
-            //{
-            //    if (Board[I, J].Controls.Count != 0)
-            //        break;
-            //    else
-            //        result.Add(Board[I, J]);
-            //}
-            //for (int I = i + 1, J = j - 1; I < 8 && J >= 0; I++, J--)//вправо вниз
-            //{
-            //    if (Board[I, J].Controls.Count != 0)
-            //        break;
-            //    else
-            //        result.Add(Board[I, J]);
-            //}
-            //for (int I = i - 1, J = j - 1; I >= 0 && J >= 0; I--, J--)//влево вниз
-            //{
-            //    if (Board[I, J].Controls.Count != 0)
-            //        break;
-            //    else
-            //        result.Add(Board[I, J]);
-            //}
-            throw new NotImplementedException();
+            var result = new List<PossibleMove>();
+
+            var checker = board[coordinate].Checker;
+            (var x, var y) = coordinate;
+            BoardHorizontalCoordinates i;
+            BoardVerticalCoordinates j;
+
+            //left up
+            for(i = x - 1, j = y + 1; 
+                i >= BoardHorizontalCoordinates.A 
+                && j <= BoardVerticalCoordinates.Eight; 
+                i--, j++)
+            {
+                if (board[i, j].Checker != null)
+                    break;
+                else
+                    result.Add(new PossibleMove(coordinate, (i, j)));
+            }
+
+            //right up
+            for (i = x + 1, j = y + 1;
+                i <= BoardHorizontalCoordinates.H
+                && j <= BoardVerticalCoordinates.Eight;
+                i++, j++)
+            {
+                if (board[i, j].Checker != null)
+                    break;
+                else
+                    result.Add(new PossibleMove(coordinate, (i, j)));
+            }
+
+            //right down
+            for (i = x + 1, j = y - 1;
+                i <= BoardHorizontalCoordinates.H
+                && j >= BoardVerticalCoordinates.One;
+                i++, j--)
+            {
+                if (board[i, j].Checker != null)
+                    break;
+                else
+                    result.Add(new PossibleMove(coordinate, (i, j)));
+            }
+
+            //left down
+            for (i = x - 1, j = y - 1;
+                i >= BoardHorizontalCoordinates.A
+                && j >= BoardVerticalCoordinates.One;
+                i--, j--)
+            {
+                if (board[i, j].Checker != null)
+                    break;
+                else
+                    result.Add(new PossibleMove(coordinate, (i, j)));
+            }
+
+            return result;
         }
     }
 }

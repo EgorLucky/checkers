@@ -135,10 +135,24 @@ namespace DomainLogic
             }
         }
 
-
         public List<PossibleMove> SearchSimpleMoves(CellCoordinate coordinate, Board board)
         {
             var result = new List<PossibleMove>();
+
+            var searchSimpleDelegate = new Action<
+                bool,
+                bool,
+                Func<BoardHorizontalCoordinates, BoardVerticalCoordinates, bool>>(
+                (horizontalSign, 
+                verticalSign,
+                cycleCondition) => 
+                SearchSimple(
+                    board, 
+                    coordinate, 
+                    result, 
+                    horizontalSign, 
+                    verticalSign, 
+                    cycleCondition)); 
 
             var checker = board[coordinate].Checker;
             (var x, var y) = coordinate;
@@ -146,54 +160,62 @@ namespace DomainLogic
             BoardVerticalCoordinates j;
 
             //left up
-            for(i = x - 1, j = y + 1; 
-                i >= BoardHorizontalCoordinates.A 
-                && j <= BoardVerticalCoordinates.Eight; 
-                i--, j++)
-            {
-                if (board[i, j].Checker != null)
-                    break;
-                else
-                    result.Add(new PossibleMove(coordinate, (i, j)));
-            }
+            searchSimpleDelegate(
+                false, 
+                true, 
+                (h, v) => h >= BoardHorizontalCoordinates.A && v <= BoardVerticalCoordinates.Eight);
 
             //right up
-            for (i = x + 1, j = y + 1;
-                i <= BoardHorizontalCoordinates.H
-                && j <= BoardVerticalCoordinates.Eight;
-                i++, j++)
-            {
-                if (board[i, j].Checker != null)
-                    break;
-                else
-                    result.Add(new PossibleMove(coordinate, (i, j)));
-            }
+            searchSimpleDelegate(
+                true,
+                true,
+                (h, v) => h <= BoardHorizontalCoordinates.H && v <= BoardVerticalCoordinates.Eight);
 
             //right down
-            for (i = x + 1, j = y - 1;
-                i <= BoardHorizontalCoordinates.H
-                && j >= BoardVerticalCoordinates.One;
-                i++, j--)
-            {
-                if (board[i, j].Checker != null)
-                    break;
-                else
-                    result.Add(new PossibleMove(coordinate, (i, j)));
-            }
+            searchSimpleDelegate(
+                true,
+                false,
+                (h, v) => h <= BoardHorizontalCoordinates.H && v >= BoardVerticalCoordinates.One);
 
             //left down
-            for (i = x - 1, j = y - 1;
-                i >= BoardHorizontalCoordinates.A
-                && j >= BoardVerticalCoordinates.One;
-                i--, j--)
+            searchSimpleDelegate(
+                false,
+                false,
+                (h, v) => h >= BoardHorizontalCoordinates.A && v >= BoardVerticalCoordinates.One);
+
+            return result;
+        }
+
+        void SearchSimple(
+            Board board,
+            CellCoordinate coordinate,
+            List<PossibleMove> result,
+            bool horizontalSign,
+            bool verticalSign,
+            Func<BoardHorizontalCoordinates, BoardVerticalCoordinates, bool> cycleCondition
+            )
+        {
+            var checker = board[coordinate].Checker;
+            (var x, var y) = coordinate;
+            BoardHorizontalCoordinates i;
+            BoardVerticalCoordinates j;
+
+            Func<BoardHorizontalCoordinates, BoardHorizontalCoordinates> changeHorizontalCounter = horizontalSign
+                ? (h) => h + 1
+                : (h) => h - 1;
+            Func<BoardVerticalCoordinates, BoardVerticalCoordinates> changeVerticalCounter = verticalSign
+                ? (v) => v + 1
+                : (v) => v - 1;
+
+            for (i = changeHorizontalCounter(x), j = changeVerticalCounter(y);
+                cycleCondition(i, j);
+                changeHorizontalCounter(i), changeVerticalCounter(j))
             {
                 if (board[i, j].Checker != null)
                     break;
                 else
                     result.Add(new PossibleMove(coordinate, (i, j)));
             }
-
-            return result;
         }
     }
 }

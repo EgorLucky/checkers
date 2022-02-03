@@ -154,11 +154,6 @@ namespace DomainLogic
                     verticalSign, 
                     cycleCondition)); 
 
-            var checker = board[coordinate].Checker;
-            (var x, var y) = coordinate;
-            BoardHorizontalCoordinates i;
-            BoardVerticalCoordinates j;
-
             //left up
             searchSimpleDelegate(
                 false, 

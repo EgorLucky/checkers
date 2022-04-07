@@ -25,8 +25,6 @@ namespace DomainLogic.Services
 
             boardState.Board = board;
             boardState.PossibleMoves = FindPossibleMoves(board, game.AwaitableMove.Value);
-            //save
-
 
             return boardState;
         }
@@ -39,7 +37,8 @@ namespace DomainLogic.Services
 
             var cellsWithCheckers = board
                                 .Cells
-                                .Where(c => c.Value.Checker.Color == checkerColor)
+                                .Where(c => c.Checker != null)
+                                .Where(c => c.Checker.Color == checkerColor)
                                 .ToList();
 
             var result = new List<PossibleMove>();
@@ -48,11 +47,11 @@ namespace DomainLogic.Services
             foreach(var cellWithChecker in cellsWithCheckers)
             {
                 ICheckerMoveSearcher searcher = 
-                            cellWithChecker.Value.Checker.Role == CheckerRole.Men
+                            cellWithChecker.Checker.Role == CheckerRole.Men
                                 ? new MenCheckerMoveSearcher()
                                 : new KingCheckerMoveSearcher();
                 
-                var captureMoves = searcher.SearchCaptureMoves(cellWithChecker.Key, board);
+                var captureMoves = searcher.SearchCaptureMoves(cellWithChecker.Coordinate, board);
 
                 if(captureMoves.Count > 0)
                 {
@@ -61,7 +60,7 @@ namespace DomainLogic.Services
                 }
                 else if(captureMovesFound == false)
                 {
-                    var simpleMoves = searcher.SearchSimpleMoves(cellWithChecker.Key, board);
+                    var simpleMoves = searcher.SearchSimpleMoves(cellWithChecker.Coordinate, board);
                     result.AddRange(captureMoves);
                 }
             }

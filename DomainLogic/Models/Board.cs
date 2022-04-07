@@ -65,19 +65,29 @@ namespace DomainLogic.Models
 
         public Cell this[BoardHorizontalCoordinates horizontal, BoardVerticalCoordinates vertical] 
         {
-            get => Cells[new CellCoordinate(horizontal, vertical)];
+            get => Cells.Find(c => c.Coordinate == (horizontal, vertical));
 
-            set => Cells[new CellCoordinate(horizontal, vertical)] = value;
+            set
+            {
+                Cells.RemoveAll(c => c.Coordinate == (horizontal, vertical));
+                value.Coordinate = (horizontal, vertical);
+                Cells.Add(value);
+            }
         }
 
         public Cell this[CellCoordinate coordinate]
         {
-            get => Cells[coordinate];
+            get => Cells.Find(c => c.Coordinate == coordinate);
 
-            set => Cells[coordinate] = value;
+            set
+            {
+                Cells.RemoveAll(c => c.Coordinate == coordinate);
+                value.Coordinate = coordinate;
+                Cells.Add(value);
+            }
         }
 
-        public Dictionary<CellCoordinate, Cell> Cells { get; set; } = new Dictionary<CellCoordinate, Cell>();
+        public List<Cell> Cells { get; set; } = new List<Cell>();
     }
 
     public record CellCoordinate(

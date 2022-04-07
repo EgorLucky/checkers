@@ -48,7 +48,7 @@ namespace Шашки
             return ToDictionary(response);
         }
 
-        internal static async Task<Dictionary<string, string>> GameStartWithBot(string gameId)
+        internal static async Task<JObject> GameStartWithBot(string gameId)
         {
             var response = default(byte[]);
 
@@ -63,10 +63,10 @@ namespace Шашки
             }
             catch (Exception e)
             {
-
+                throw e;
             }
 
-            return ToDictionary(response);
+            return ToJObject(response);
         }
 
 
@@ -80,6 +80,14 @@ namespace Шашки
                 .Properties()
                 .Select(s => new KeyValuePair<string, string>(s.Name, s.Value.ToString()))
                 .ToDictionary(s => s.Key, s => s.Value);
+        }
+
+
+        static JObject ToJObject(byte[] bytes)
+        {
+            var responseString = Encoding.UTF8.GetString(bytes);
+
+            return JObject.Parse(responseString);
         }
     }
 }

@@ -58,7 +58,7 @@ namespace Шашки
             //start game
             var startRequestResponse = await BackendService.GameStartWithBot(FirstPlayerCode);
 
-            AwaitableMove = startRequestResponse["awaitableMove"];
+            AwaitableMove = startRequestResponse["awaitableMove"].ToString();
 
             //check who moves
 

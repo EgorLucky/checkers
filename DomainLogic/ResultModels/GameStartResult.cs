@@ -10,5 +10,6 @@ namespace DomainLogic.ResultModels
     public record GameStartResult(
         bool Success = true,
         string Message = "",
-        AwaitableMove? AwaitableMove = null);
+        AwaitableMove? AwaitableMove = null,
+        BoardState BoardState = null);
 }

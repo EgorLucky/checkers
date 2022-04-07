@@ -34,11 +34,12 @@ namespace RestApi
             services
                 .AddTransient<GameService>()
                 .AddTransient<IGameRepository, GameRepository>()
+                .AddTransient<IGameHistoryRepository, GameHistoryRepository>()
                 .AddTransient<MoveManager>()
                 .AddSingleton<IBotNotifier, BotQueueService>()
                 .AddSingleton<Bot>()
                 .AddSingleton<IBotRepository, BotRepository>()
-                .AddHttpClient<IGameServiceClient, GameServiceHttpClient>(c => c.BaseAddress = new Uri("https://localhost:44388"));
+                .AddHttpClient<IGameServiceClient, GameServiceHttpClient>(c => c.BaseAddress = new Uri("https://localhost:5001"));
 
 
             services.AddControllers()

@@ -12,17 +12,20 @@ namespace DomainLogic.Services
     public class GameService
     {
         private readonly IGameRepository _repository;
+        private readonly IGameHistoryRepository _gameHistoryRepository;
         private readonly IBotNotifier _botNotifier;
         private readonly MoveManager _moveManager;
 
         public GameService(
-            IGameRepository repository, 
+            IGameRepository repository,
+            IGameHistoryRepository gameHistoryRepository,
             IBotNotifier botNotifier,
             MoveManager moveManager)
         {
             _repository = repository;
             _botNotifier = botNotifier;
             _moveManager = moveManager;
+            _gameHistoryRepository = gameHistoryRepository;
         }
 
         public async Task<GameCreateResult> Create()
@@ -56,9 +59,12 @@ namespace DomainLogic.Services
                     Success: false, 
                     Message: "game not found");
 
+            var boardState = await _gameHistoryRepository.GetLastBoardState(gameId);
+
             return new GameGetInfoResult(
                 State: game.State,
-                AwaitableMove: game.AwaitableMove);
+                AwaitableMove: game.AwaitableMove,
+                BoardState: boardState);
         }
 
         public async Task<GameRegisterSecondPlayerResult> RegisterSecondPlayer(Guid gameId)
@@ -123,10 +129,13 @@ namespace DomainLogic.Services
 
             await _repository.Update(game);
 
-            var board = await _moveManager.InitializeHistory(game);
+            var boardState = await _moveManager.InitializeHistory(game);
+
+            await _gameHistoryRepository.SaveBoardState(boardState);
 
             return new GameStartResult(
-                AwaitableMove: game.AwaitableMove);
+                AwaitableMove: game.AwaitableMove,
+                BoardState: boardState);
         }
 
     }

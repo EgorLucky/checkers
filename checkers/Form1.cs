@@ -30,6 +30,9 @@ namespace Шашки
             InitializeComponent();
         }
 
+        Color blackCellColor = Color.Black;
+        Color yellowCellColor = Color.FromArgb(255, 255, 192, 128);
+
         private async void Form1_Load(object sender, EventArgs e)
         {
             Board = new Panel[,]//внесение ячеек в массив для того, чтобы к ним можно было обращаться по индексу
@@ -39,7 +42,16 @@ namespace Шашки
                 {p04,p14,p24,p34,p44,p54,p64,p74},{p05,p15,p25,p35,p45,p55,p65,p75},
                 {p06,p16,p26,p36,p46,p56,p66,p76},{p07,p17,p27,p37,p47,p57,p67,p77}
                 };
-            CheckersCreating();
+
+            
+
+            foreach(var p in Board)
+            {
+                p.Controls.Clear();
+                p.BackColor = Panel.DefaultBackColor;
+            }
+
+            //CheckersCreating();
 
             var game = await BackendService.GameCreateWithBot();
             GameId = game["id"];
@@ -61,6 +73,8 @@ namespace Шашки
             ///todo: show board
 
             var board = startRequestResponse["boardState"]["board"];
+
+            CheckersCreating(board);
 
             AwaitableMove = startRequestResponse["awaitableMove"].ToString();
 
@@ -102,8 +116,28 @@ namespace Шашки
             AwaitableMove = gameInfo["awaitableMove"];
         }
 
-        private void CheckersCreating()//инициализация шашек
+        private void CheckersCreating(Newtonsoft.Json.Linq.JToken board)//инициализация шашек
         {
+            var horizontals = new string[] { "A", "B", "C", "D", "E", "F", "G", "H" };
+            var verticals = new string[] { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"};
+
+            foreach(var cell in board["cells"])
+            {
+                var i = Array.IndexOf(horizontals, cell["coordinate"]["horizontal"].ToString());
+                var j = Array.IndexOf(verticals, cell["coordinate"]["vertical"].ToString());
+                var panel = Board[i, j];
+                if(cell["checker"].Type != Newtonsoft.Json.Linq.JTokenType.Null)
+                {
+                    //create checker
+                }
+
+                var cellColor = cell["color"].ToString();
+
+                if (cellColor == "Black")
+                    panel.BackColor = blackCellColor;
+                else panel.BackColor = yellowCellColor;
+            }
+
             red = new List<Checker>
             {
                 new Checker(Board,pictureBox1,0), new Checker(Board,pictureBox2,0), new Checker(Board,pictureBox3,0),
@@ -389,7 +423,7 @@ namespace Шашки
             {
                 cell.Controls.Clear();//очистка доски
             }
-            CheckersCreating();//создание шашек
+            CheckersCreating(null);//создание шашек
             int c = 0;
             for(int i =0;i<3;i++)//размещение красных шашек
             {

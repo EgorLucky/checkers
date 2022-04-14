@@ -8,7 +8,7 @@
             Coordinate = coordinate;
         }
 
-        public CellColor Color;
+        public CellColor Color { get; set; }
         public Checker Checker { get; set; }
         public CellCoordinate Coordinate { get; set; }
     }

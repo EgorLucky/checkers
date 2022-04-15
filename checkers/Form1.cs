@@ -88,7 +88,7 @@ namespace Шашки
             }
             else
             {
-
+                
             }
         }
 
@@ -121,7 +121,20 @@ namespace Шашки
             var horizontals = new string[] { "A", "B", "C", "D", "E", "F", "G", "H" };
             var verticals = new string[] { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"};
 
-            foreach(var cell in board["cells"])
+            red = new List<Checker>();
+            blue = new List<Checker>();
+
+            var redPictureBoxes = new Stack<PictureBox>(new List<PictureBox>() 
+            {
+                pictureBox1, pictureBox2, pictureBox3, pictureBox4, pictureBox5, pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10, pictureBox11, pictureBox12      
+            });
+
+            var bluePictureBoxes = new Stack<PictureBox>(new List<PictureBox>()
+            {
+                pictureBox13, pictureBox14, pictureBox15, pictureBox16, pictureBox17, pictureBox18, pictureBox19, pictureBox20, pictureBox21, pictureBox22, pictureBox23, pictureBox24
+            });
+
+            foreach (var cell in board["cells"])
             {
                 var i = Array.IndexOf(horizontals, cell["coordinate"]["horizontal"].ToString());
                 var j = Array.IndexOf(verticals, cell["coordinate"]["vertical"].ToString());
@@ -129,6 +142,19 @@ namespace Шашки
                 if(cell["checker"].Type != Newtonsoft.Json.Linq.JTokenType.Null)
                 {
                     //create checker
+                    var checkerFromCell = cell["checker"];
+                    if (checkerFromCell["color"].ToObject<string>() == "White")
+                    {
+                        var pictureBox = redPictureBoxes.Pop();
+                        panel.Controls.Add(pictureBox);
+                        red.Add(new Checker(Board, pictureBox, 0)); 
+                    }
+                    if (checkerFromCell["color"].ToObject<string>() == "Black")
+                    {
+                        var pictureBox = bluePictureBoxes.Pop();
+                        panel.Controls.Add(pictureBox);
+                        red.Add(new Checker(Board, pictureBox, 1));
+                    }
                 }
 
                 var cellColor = cell["color"].ToString();
@@ -138,20 +164,20 @@ namespace Шашки
                 else panel.BackColor = yellowCellColor;
             }
 
-            red = new List<Checker>
-            {
-                new Checker(Board,pictureBox1,0), new Checker(Board,pictureBox2,0), new Checker(Board,pictureBox3,0),
-                new Checker(Board,pictureBox4,0),new Checker(Board,pictureBox5,0),new Checker(Board,pictureBox6,0),
-                new Checker(Board,pictureBox7,0),new Checker(Board,pictureBox8,0),new Checker(Board,pictureBox9,0),
-                new Checker(Board,pictureBox10,0),new Checker(Board,pictureBox11,0),new Checker(Board,pictureBox12,0)
-            };
-            blue = new List<Checker>
-            {
-                new Checker(Board,pictureBox13,1), new Checker(Board,pictureBox14,1), new Checker(Board,pictureBox15,1),
-                new Checker(Board,pictureBox16,1),new Checker(Board,pictureBox17,1),new Checker(Board,pictureBox18,1),
-                new Checker(Board,pictureBox19,1),new Checker(Board,pictureBox20,1),new Checker(Board,pictureBox21,1),
-                new Checker(Board,pictureBox22,1),new Checker(Board,pictureBox23,1),new Checker(Board,pictureBox24,1)
-            };
+            //red = new List<Checker>
+            //{
+            //    new Checker(Board,pictureBox1,0), new Checker(Board,pictureBox2,0), new Checker(Board,pictureBox3,0),
+            //    new Checker(Board,pictureBox4,0),new Checker(Board,pictureBox5,0),new Checker(Board,pictureBox6,0),
+            //    new Checker(Board,pictureBox7,0),new Checker(Board,pictureBox8,0),new Checker(Board,pictureBox9,0),
+            //    new Checker(Board,pictureBox10,0),new Checker(Board,pictureBox11,0),new Checker(Board,pictureBox12,0)
+            //};
+            //blue = new List<Checker>
+            //{
+            //    new Checker(Board,pictureBox13,1), new Checker(Board,pictureBox14,1), new Checker(Board,pictureBox15,1),
+            //    new Checker(Board,pictureBox16,1),new Checker(Board,pictureBox17,1),new Checker(Board,pictureBox18,1),
+            //    new Checker(Board,pictureBox19,1),new Checker(Board,pictureBox20,1),new Checker(Board,pictureBox21,1),
+            //    new Checker(Board,pictureBox22,1),new Checker(Board,pictureBox23,1),new Checker(Board,pictureBox24,1)
+            //};
         }
         private void panel1_Click(object sender, EventArgs e)// ход на выбранную ячейку
         {

@@ -25,19 +25,20 @@ namespace DomainLogic.Models
         const int playerCheckersCount = 12;
         public Board(CellColor checkerCellColor)
         {
-            var isBlack = true;
+            var isFirstCellBlack = true;
             var currentSideCheckersNotPlacedCount = playerCheckersCount;
             var checkerColor = CheckerColor.White;
-
-            foreach(var horizontal in Enum.GetValues<BoardHorizontalCoordinates>())
+            var isCellBlack = isFirstCellBlack;
+                        
+            foreach (var vertical in Enum.GetValues<BoardVerticalCoordinates>())
             {
-                foreach (var vertical in Enum.GetValues<BoardVerticalCoordinates>())
+                foreach (var horizontal in Enum.GetValues<BoardHorizontalCoordinates>())
                 {
-                    var color = isBlack ? CellColor.Black : CellColor.White;
+                    var currentCellColor = isCellBlack ? CellColor.Black : CellColor.White;
 
-                    var cell = new Cell(color);
+                    var cell = new Cell(currentCellColor);
 
-                    if (color == checkerCellColor 
+                    if (currentCellColor == checkerCellColor 
                         && currentSideCheckersNotPlacedCount > 0
                         && vertical != BoardVerticalCoordinates.Four 
                         && vertical != BoardVerticalCoordinates.Five)
@@ -55,8 +56,8 @@ namespace DomainLogic.Models
 
                     this[horizontal, vertical] = cell;
 
-                    if (vertical != BoardVerticalCoordinates.Eight)
-                        isBlack = !isBlack;
+                    if (horizontal != BoardHorizontalCoordinates.H)
+                        isCellBlack = !isCellBlack;
                 }
             }
 

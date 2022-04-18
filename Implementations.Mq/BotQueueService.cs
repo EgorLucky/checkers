@@ -10,6 +10,7 @@ namespace Implementations.Mq
     {
         private readonly Bot _bot;
         private static bool RegistrationConsumingStarted;
+        private static bool MoveConsumingStarted;
 
         public BotQueueService(Bot bot)
         {
@@ -17,6 +18,7 @@ namespace Implementations.Mq
         }
 
         static ConcurrentQueue<Guid> RegisterQueue = new ConcurrentQueue<Guid>();
+        static ConcurrentQueue<Guid> MoveQueue = new ConcurrentQueue<Guid>();
 
         public async Task RegisterNotify(Guid gameId)
         {
@@ -40,5 +42,26 @@ namespace Implementations.Mq
             }
         }
 
+        public async Task MoveNotify(Guid gameId)
+        {
+            MoveQueue.Enqueue(gameId);
+
+            if (MoveConsumingStarted == false)
+            {
+                StartMoveConsuming(new CancellationToken());
+                MoveConsumingStarted = true;
+            }
+        }
+
+        private async void StartMoveConsuming(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                if (MoveQueue.TryDequeue(out Guid gameId))
+                {
+                    await _bot.Move(gameId);
+                }
+            }
+        }
     }
 }

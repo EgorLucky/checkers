@@ -9,5 +9,6 @@ namespace DomainLogic.Services
     public interface IBotNotifier
     {
         public Task RegisterNotify(Guid gameId);
+        public Task MoveNotify(Guid gameId);
     }
 }

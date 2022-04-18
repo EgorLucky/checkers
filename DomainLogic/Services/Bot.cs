@@ -35,6 +35,9 @@ namespace DomainLogic.Services
             }
         }
 
-        
+        public Task Move(Guid gameId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

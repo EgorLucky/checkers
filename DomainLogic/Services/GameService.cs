@@ -96,6 +96,7 @@ namespace DomainLogic.Services
             if(startResult.Success && startResult.AwaitableMove == AwaitableMove.SecondPlayer)
             {
                 //notify bot
+                await _botNotifier.MoveNotify(startResult.BoardState.GameId);
             }
 
             return startResult;

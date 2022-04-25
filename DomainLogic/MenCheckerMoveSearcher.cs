@@ -6,11 +6,11 @@ namespace DomainLogic
 {
     public class MenCheckerMoveSearcher : ICheckerMoveSearcher
     {
-        public List<PossibleMove> SearchCaptureMoves(CellCoordinate coordinate, Board board)
+        public List<Move> SearchCaptureMoves(CellCoordinate coordinate, Board board)
         {
             var cell = board[coordinate];
             var checker = cell.Checker;
-            var result = new List<PossibleMove>();
+            var result = new List<Move>();
 
             var searchCaptureDelegate = new Action<bool, bool, bool>(
                 (coordinateConditionResult, horizontalSign, verticalSign)
@@ -49,9 +49,9 @@ namespace DomainLogic
             return result;
         }
 
-        public List<PossibleMove> SearchSimpleMoves(CellCoordinate coordinate, Board board)
+        public List<Move> SearchSimpleMoves(CellCoordinate coordinate, Board board)
         {
-            var result = new List<PossibleMove>();
+            var result = new List<Move>();
             var cell = board[coordinate];
             var checker = cell.Checker;
 
@@ -104,7 +104,7 @@ namespace DomainLogic
         void SearchSimple(
             Board board,
             CellCoordinate coordinate,
-            List<PossibleMove> result,
+            List<Move> result,
             BoardHorizontalCoordinates horizontal, 
             BoardVerticalCoordinates vertical,
             bool horizontalSign,
@@ -122,14 +122,14 @@ namespace DomainLogic
                     && coordinate.Vertical != vertical
                     && board[moveToCoordinate].Checker == null)
             {
-                result.Add(new PossibleMove(coordinate, moveToCoordinate));
+                result.Add(new Move(coordinate, moveToCoordinate));
             }
         }
 
         void SearchCapture(
             Board board,
             CellCoordinate coordinate,
-            List<PossibleMove> result,
+            List<Move> result,
             bool coordinateConditionResult,
             bool horizontalSign,
             bool verticalSign
@@ -154,7 +154,7 @@ namespace DomainLogic
                 && board[capturableCheckerCoordinate].Checker.Color != checker.Color
                 && board[moveToCoordinate].Checker == null)
             {
-                result.Add(new PossibleMove(coordinate, moveToCoordinate, capturableCheckerCoordinate));
+                result.Add(new Move(coordinate, moveToCoordinate, capturableCheckerCoordinate));
             }
         }
     }

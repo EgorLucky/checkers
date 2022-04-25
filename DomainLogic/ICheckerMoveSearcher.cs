@@ -8,8 +8,8 @@ namespace DomainLogic
 {
     public interface ICheckerMoveSearcher
     {
-        List<PossibleMove> SearchCaptureMoves(CellCoordinate coordinate, Board board);
+        List<Move> SearchCaptureMoves(CellCoordinate coordinate, Board board);
 
-        List<PossibleMove> SearchSimpleMoves(CellCoordinate coordinate, Board board);
+        List<Move> SearchSimpleMoves(CellCoordinate coordinate, Board board);
     }
 }

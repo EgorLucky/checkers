@@ -6,9 +6,9 @@ namespace DomainLogic
 {
     public class KingCheckerMoveSearcher : ICheckerMoveSearcher
     {
-        public List<PossibleMove> SearchCaptureMoves(CellCoordinate coordinate, Board board)
+        public List<Move> SearchCaptureMoves(CellCoordinate coordinate, Board board)
         {
-            var result = new List<PossibleMove>();
+            var result = new List<Move>();
 
             var searchCaptureDelegate = new Action<
                 bool,
@@ -85,7 +85,7 @@ namespace DomainLogic
         void SearchCapture(
             Board board,
             CellCoordinate coordinate,
-            List<PossibleMove> result,
+            List<Move> result,
             bool cellCoordinateConditionResult,
             bool horizontalSign,
             bool verticalSign,
@@ -123,21 +123,21 @@ namespace DomainLogic
                         && j != restrictedVerticalValue
                         && board[(i = changeHorizontalCounter(i)), j = changeVerticalCounter(j)].Checker == null)
                     {
-                        result.Add(new PossibleMove(coordinate, (i, j), currentCoordinate));
+                        result.Add(new Move(coordinate, (i, j), currentCoordinate));
                         for (i = changeHorizontalCounter(i), j = changeVerticalCounter(j);
                             secondCycleCondition(i, j)
                             && board[i, j].Checker == null;
                             i = changeHorizontalCounter(i), j = changeVerticalCounter(j))
-                            result.Add(new PossibleMove(coordinate, (i, j), currentCoordinate));
+                            result.Add(new Move(coordinate, (i, j), currentCoordinate));
                     }
                     break;
                 }
             }
         }
 
-        public List<PossibleMove> SearchSimpleMoves(CellCoordinate coordinate, Board board)
+        public List<Move> SearchSimpleMoves(CellCoordinate coordinate, Board board)
         {
-            var result = new List<PossibleMove>();
+            var result = new List<Move>();
 
             var searchSimpleDelegate = new Action<
                 bool,
@@ -184,7 +184,7 @@ namespace DomainLogic
         void SearchSimple(
             Board board,
             CellCoordinate coordinate,
-            List<PossibleMove> result,
+            List<Move> result,
             bool horizontalSign,
             bool verticalSign,
             Func<BoardHorizontalCoordinates, BoardVerticalCoordinates, bool> cycleCondition
@@ -209,7 +209,7 @@ namespace DomainLogic
                 if (board[i, j].Checker != null)
                     break;
                 else
-                    result.Add(new PossibleMove(coordinate, (i, j)));
+                    result.Add(new Move(coordinate, (i, j)));
             }
         }
     }

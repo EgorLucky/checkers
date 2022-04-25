@@ -21,8 +21,16 @@ namespace Implementations.Repositories
         {
             if(filter.Id != null)
                 return Games.Where(g => g.Id == filter.Id).FirstOrDefault();
-
-            return Games.Where(g => g.FirstPlayerCode == filter.FirstPlayerCode).FirstOrDefault();
+            if(filter.FirstPlayerCode != null)
+                return Games
+                    .Where(g => g.FirstPlayerCode == filter.FirstPlayerCode)
+                    .FirstOrDefault();
+            if (filter.PlayerCode != null)
+                return Games
+                    .Where(g => g.FirstPlayerCode == filter.PlayerCode
+                    || g.SecondPlayerCode == filter.PlayerCode)
+                    .FirstOrDefault();
+            throw new ArgumentException("all filter properties are empty");
         }
 
         public async Task Update(Game game)

@@ -8,5 +8,6 @@ namespace DomainLogic.Filters
 {
     public record GameGetFilter(
         Guid? Id = null,
-        Guid? FirstPlayerCode = null);
+        Guid? FirstPlayerCode = null,
+        Guid? PlayerCode = null);
 }

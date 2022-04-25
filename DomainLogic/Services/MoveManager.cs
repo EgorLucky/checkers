@@ -29,7 +29,7 @@ namespace DomainLogic.Services
             return boardState;
         }
 
-        private List<PossibleMove> FindPossibleMoves(Board board, AwaitableMove awaitableMove)
+        private List<Move> FindPossibleMoves(Board board, AwaitableMove awaitableMove)
         {
             var checkerColor = awaitableMove == AwaitableMove.FirstPlayer 
                 ? CheckerColor.White 
@@ -41,7 +41,7 @@ namespace DomainLogic.Services
                                 .Where(c => c.Checker.Color == checkerColor)
                                 .ToList();
 
-            var result = new List<PossibleMove>();
+            var result = new List<Move>();
             var captureMovesFound = false;
 
             foreach(var cellWithChecker in cellsWithCheckers)

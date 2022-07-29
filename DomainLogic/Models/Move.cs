@@ -3,8 +3,7 @@
 namespace DomainLogic.Models
 {
     public record Move(
-        CellCoordinate From,
-        CellCoordinate To,
+        MoveVector MoveVector,
         CellCoordinate CapturableCheckerCoordinate = null
     );
 }

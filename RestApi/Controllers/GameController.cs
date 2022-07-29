@@ -1,4 +1,6 @@
-﻿using DomainLogic.Services;
+﻿using DomainLogic.Models;
+using DomainLogic.ParameterModels;
+using DomainLogic.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -23,17 +25,17 @@ namespace RestApi.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create([FromBody] GameCreateDTO dto)
         {
-            var game = await _service.Create();
+            var game = await _service.Create(dto);
 
             return Ok(game);
         }
 
         [HttpPost("createWithBot")]
-        public async Task<IActionResult> CreateWithBot()
+        public async Task<IActionResult> CreateWithBot([FromBody] GameCreateDTO dto)
         {
-            var game = await _service.CreateWithBot();
+            var game = await _service.CreateWithBot(dto);
 
             return Ok(game);
         }
@@ -80,6 +82,14 @@ namespace RestApi.Controllers
                 return Ok(startGameResult);
 
             return BadRequest(startGameResult);
+        }
+
+        [HttpPost("move/{gameId}")]
+        public async Task<IActionResult> Move([FromHeader] Guid playerCode, [FromBody] MoveVector move)
+        {
+            var moveResult = await _service.Move(playerCode, move);
+
+            return Ok(moveResult);
         }
 
     }

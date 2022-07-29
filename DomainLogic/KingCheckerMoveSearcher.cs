@@ -123,19 +123,19 @@ namespace DomainLogic
                         && j != restrictedVerticalValue
                         && board[(i = changeHorizontalCounter(i)), j = changeVerticalCounter(j)].Checker == null)
                     {
-                        result.Add(new Move(coordinate, (i, j), currentCoordinate));
+                        result.Add(new Move((coordinate, (i, j)), currentCoordinate));
                         for (i = changeHorizontalCounter(i), j = changeVerticalCounter(j);
                             secondCycleCondition(i, j)
                             && board[i, j].Checker == null;
                             i = changeHorizontalCounter(i), j = changeVerticalCounter(j))
-                            result.Add(new Move(coordinate, (i, j), currentCoordinate));
+                            result.Add(new Move((coordinate, (i, j)), currentCoordinate));
                     }
                     break;
                 }
             }
         }
 
-        public List<Move> SearchSimpleMoves(CellCoordinate coordinate, Board board)
+        public List<Move> SearchSimpleMoves(CellCoordinate coordinate, Board board, string firstPlayerCheckerColor)
         {
             var result = new List<Move>();
 
@@ -209,7 +209,7 @@ namespace DomainLogic
                 if (board[i, j].Checker != null)
                     break;
                 else
-                    result.Add(new Move(coordinate, (i, j)));
+                    result.Add(new Move((coordinate, (i, j))));
             }
         }
     }

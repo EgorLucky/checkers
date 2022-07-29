@@ -2,13 +2,13 @@
 {
     public class Cell
     {
-        public Cell(CellColor color, CellCoordinate coordinate = null)
+        public Cell(string color, CellCoordinate coordinate = null)
         {
             Color = color;
             Coordinate = coordinate;
         }
 
-        public CellColor Color { get; set; }
+        public string Color { get; set; }
         public Checker Checker { get; set; }
         public CellCoordinate Coordinate { get; set; }
     }

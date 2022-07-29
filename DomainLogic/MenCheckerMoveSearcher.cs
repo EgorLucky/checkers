@@ -49,7 +49,7 @@ namespace DomainLogic
             return result;
         }
 
-        public List<Move> SearchSimpleMoves(CellCoordinate coordinate, Board board)
+        public List<Move> SearchSimpleMoves(CellCoordinate coordinate, Board board, string firstPlayerCheckerColor)
         {
             var result = new List<Move>();
             var cell = board[coordinate];
@@ -67,7 +67,7 @@ namespace DomainLogic
                         verticalSign));
 
             //TODO: make property to know checker vector
-            if (checker.Color == CheckerColor.Black)
+            if (checker.Color == firstPlayerCheckerColor)
             {
                 //then search moves up from start of board
                 searchSimpleDelegate(
@@ -122,7 +122,7 @@ namespace DomainLogic
                     && coordinate.Vertical != vertical
                     && board[moveToCoordinate].Checker == null)
             {
-                result.Add(new Move(coordinate, moveToCoordinate));
+                result.Add(new Move((coordinate, moveToCoordinate)));
             }
         }
 
@@ -154,7 +154,7 @@ namespace DomainLogic
                 && board[capturableCheckerCoordinate].Checker.Color != checker.Color
                 && board[moveToCoordinate].Checker == null)
             {
-                result.Add(new Move(coordinate, moveToCoordinate, capturableCheckerCoordinate));
+                result.Add(new Move((coordinate, moveToCoordinate), capturableCheckerCoordinate));
             }
         }
     }

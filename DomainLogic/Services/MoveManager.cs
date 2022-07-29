@@ -11,61 +11,71 @@ namespace DomainLogic.Services
     {
         public async Task<BoardState> InitializeHistory(Game game)
         {
-            var boardState = new BoardState
-            {
-                Id = Guid.NewGuid(),
-                GameId = game.Id,
-                CreateDateTime = DateTimeOffset.Now
-            };
+            var boardState = CreateBoardState(game.Id);
 
-            var checkerCellColor = (new Random()).Next(2) == 1 
-                ? CellColor.Black 
-                : CellColor.White;
-            var board = new Board(checkerCellColor);
+            var board = new Board(game.CheckerCellColor, game.NonPlayableCellColor);
+            board.Fill(game.FirstPlayerCheckerColor, game.OpponentCheckerColor);
 
             boardState.Board = board;
-            boardState.PossibleMoves = FindPossibleMoves(board, game.AwaitableMove.Value);
+            boardState.PossibleMoves = board.FindPossibleMoves(game);
 
             return boardState;
         }
 
-        private List<Move> FindPossibleMoves(Board board, AwaitableMove awaitableMove)
+        BoardState CreateBoardState(Guid gameId) => new BoardState
         {
-            var checkerColor = awaitableMove == AwaitableMove.FirstPlayer 
-                ? CheckerColor.White 
-                : CheckerColor.Black;
+            Id = Guid.NewGuid(),
+            GameId = gameId,
+            CreateDateTime = DateTimeOffset.Now
+        };
 
-            var cellsWithCheckers = board
-                                .Cells
-                                .Where(c => c.Checker != null)
-                                .Where(c => c.Checker.Color == checkerColor)
-                                .ToList();
+        public async Task<MoveResult> TryMove(Game game, BoardState boardState, MoveVector moveVector)
+        {
+            var move = default(Move);
+            if ((move = boardState.PossibleMoves.FirstOrDefault(m => m.MoveVector == moveVector)) == null)
+                return new MoveResult(
+                    Success: false,
+                    Message: "wrong move");
 
-            var result = new List<Move>();
-            var captureMovesFound = false;
+            //clone BoardState
+            var newBoardState = CreateBoardState(boardState.GameId);
+            var board = boardState.Board.Clone();
+            newBoardState.Board = board;
 
-            foreach(var cellWithChecker in cellsWithCheckers)
+            var cellFrom = board[moveVector.From];
+            var cellTo = board[moveVector.To];
+
+            var movingChecker = cellFrom.Checker;
+            cellFrom.Checker = null;
+            cellTo.Checker = movingChecker;
+
+            if(move.CapturableCheckerCoordinate != null)
             {
-                ICheckerMoveSearcher searcher = 
-                            cellWithChecker.Checker.Role == CheckerRole.Men
-                                ? new MenCheckerMoveSearcher()
-                                : new KingCheckerMoveSearcher();
-                
-                var captureMoves = searcher.SearchCaptureMoves(cellWithChecker.Coordinate, board);
-
-                if(captureMoves.Count > 0)
-                {
-                    result.AddRange(captureMoves);
-                    captureMovesFound = true;
-                }
-                else if(captureMovesFound == false)
-                {
-                    var simpleMoves = searcher.SearchSimpleMoves(cellWithChecker.Coordinate, board);
-                    result.AddRange(captureMoves);
-                }
+                var cellWithCapturableCell = board[move.CapturableCheckerCoordinate];
+                cellWithCapturableCell.Checker = null;
             }
+            //find possible moves for player who just moved
+            boardState.PossibleMoves = board.FindPossibleMoves(cellTo);
 
-            return result;
+            if (boardState.PossibleMoves.Any() == false)
+            {
+                //find possible moves for opponent
+                SwitchAwaitableMove(game);
+                boardState.PossibleMoves = board.FindPossibleMoves(game); 
+            }
+            //return data
+            return new MoveResult(
+                Success: true,
+                NewBoardState: newBoardState,
+                AwaitableMove: game.AwaitableMove);
+        }
+
+        private void SwitchAwaitableMove(Game game)
+        {
+            int int32AwaitableMove = (int)game.AwaitableMove;
+            int32AwaitableMove++;
+            int32AwaitableMove = int32AwaitableMove % Enum.GetValues<AwaitableMove>().Length;
+            game.AwaitableMove = (AwaitableMove)int32AwaitableMove;
         }
     }
 }

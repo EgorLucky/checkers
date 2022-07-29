@@ -11,6 +11,7 @@ namespace DomainLogic.Services
     {
         private readonly IGameServiceClient _service;
         private readonly IBotRepository _botRepository;
+        private readonly IArtificialGameAnalyzer _gameAnalyzer;
 
         public Bot(IGameServiceClient service, IBotRepository botRepository)
         {
@@ -35,9 +36,33 @@ namespace DomainLogic.Services
             }
         }
 
-        public Task Move(Guid gameId)
+        public async Task Move(Guid gameId)
         {
-            throw new NotImplementedException();
+            var playerGameData = await  _botRepository.Get(gameId);
+            var gameInfo = await _service.GetInfo(gameId);
+
+            var boardState = gameInfo.BoardState;
+            var board = boardState.Board;
+            var myColor = board
+                            .Cells
+                            .Where(c => c.Coordinate == boardState.PossibleMoves.First().MoveVector.From)
+                            .Select(c => c.Checker.Color)
+                            .First();
+            var myCheckersCells = board
+                                    .Cells
+                                    .Where(c => c.Checker != null 
+                                                && c.Checker.Color == myColor)
+                                    .ToList();
+
+            var opponentCheckersCells = board
+                                    .Cells
+                                    .Where(c => c.Checker != null
+                                                && c.Checker.Color != myColor)
+                                    .ToList();
+
+            var move = await _gameAnalyzer.CreateMove(myCheckersCells, opponentCheckersCells, boardState.PossibleMoves);
+
+            await _service.MakeMove(move, playerGameData.PlayerCode);
         }
     }
 }

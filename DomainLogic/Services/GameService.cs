@@ -1,4 +1,5 @@
 ﻿using DomainLogic.Models;
+using DomainLogic.ParameterModels;
 using DomainLogic.Repositories;
 using DomainLogic.ResultModels;
 using System;
@@ -28,14 +29,18 @@ namespace DomainLogic.Services
             _gameHistoryRepository = gameHistoryRepository;
         }
 
-        public async Task<GameCreateResult> Create()
+        public async Task<GameCreateResult> Create(GameCreateDTO dto)
         {
             var game = new Game
             {
                 Id = Guid.NewGuid(),
-                CreateDateTime = DateTimeOffset.Now,
+                CreateDateTime = DateTimeOffset.UtcNow,
                 FirstPlayerCode = Guid.NewGuid(),
-                State = GameState.Created
+                State = GameState.Created,
+                FirstPlayerCheckerColor = dto.MyCeckerColor,
+                OpponentCheckerColor = dto.OpponentCheckerColor,
+                CheckerCellColor = dto.CheckerCellColor,
+                NonPlayableCellColor = dto.NonPlayableCellColor
             };
 
             await _repository.Create(game);
@@ -43,9 +48,9 @@ namespace DomainLogic.Services
             return new GameCreateResult(game.Id, game.FirstPlayerCode.Value);
         }
 
-        public async Task<GameCreateResult> CreateWithBot()
+        public async Task<GameCreateResult> CreateWithBot(GameCreateDTO dto)
         {
-            var createResult = await Create();
+            var createResult = await Create(dto);
             await _botNotifier.RegisterNotify(createResult.Id);
             return createResult;
         }
@@ -139,5 +144,39 @@ namespace DomainLogic.Services
                 BoardState: boardState);
         }
 
+        public async Task<MoveResult> Move(Guid playerCode, MoveVector move)
+        {
+            var game = await _repository.Get(new Filters.GameGetFilter(PlayerCode: playerCode));
+
+            if (game == null)
+                return new MoveResult(
+                    Message: "game not found");
+
+            var moveFrom = game.FirstPlayerCode == playerCode
+                ? AwaitableMove.FirstPlayer
+                : AwaitableMove.SecondPlayer;
+
+            if (moveFrom != game.AwaitableMove)
+                return new MoveResult(
+                    Message: $"move from {moveFrom} is not awaitable now");
+
+            var boardState = await _gameHistoryRepository.GetLastBoardState(game.Id);
+
+            var result = await _moveManager.TryMove(game, boardState, move);
+
+            if (result.Success)
+            {
+                await _repository.Update(game);
+                await _gameHistoryRepository.SaveBoardState(result.NewBoardState);
+            }
+            else
+            {
+                return new MoveResult(
+                    Success: false,
+                    Message: result.Message);
+            }
+
+            return result;
+        }
     }
 }

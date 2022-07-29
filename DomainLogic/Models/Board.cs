@@ -16,53 +16,16 @@ namespace DomainLogic.Models
         One, Two, Three, Four, Five, Six, Seven, Eight
     }
 
-    public enum CellColor { Black, White }
-    public enum CheckerColor { Black, White }
-
-
     public class Board
     {
-        const int playerCheckersCount = 12;
-        public Board(CellColor checkerCellColor)
+        public Board(string checkerCellColor, string nonPlayableCellColor)
         {
-            var isFirstCellBlack = true;
-            var currentSideCheckersNotPlacedCount = playerCheckersCount;
-            var checkerColor = CheckerColor.White;
-            var isCellBlack = isFirstCellBlack;
-                        
-            foreach (var vertical in Enum.GetValues<BoardVerticalCoordinates>())
-            {
-                foreach (var horizontal in Enum.GetValues<BoardHorizontalCoordinates>())
-                {
-                    var currentCellColor = isCellBlack ? CellColor.Black : CellColor.White;
-
-                    var cell = new Cell(currentCellColor);
-
-                    if (currentCellColor == checkerCellColor 
-                        && currentSideCheckersNotPlacedCount > 0
-                        && vertical != BoardVerticalCoordinates.Four 
-                        && vertical != BoardVerticalCoordinates.Five)
-                    {
-                        cell.Checker = new Checker(checkerColor);
-
-                        currentSideCheckersNotPlacedCount--;
-
-                        if(currentSideCheckersNotPlacedCount == 0)
-                        {
-                            currentSideCheckersNotPlacedCount = playerCheckersCount;
-                            checkerColor = CheckerColor.Black;
-                        }
-                    }
-
-                    this[horizontal, vertical] = cell;
-
-                    if (horizontal != BoardHorizontalCoordinates.H)
-                        isCellBlack = !isCellBlack;
-                }
-            }
-
+            CheckerCellColor = checkerCellColor;
+            NonPlayableCellColor = nonPlayableCellColor;
         }
 
+        public string CheckerCellColor { get; }
+        public string NonPlayableCellColor { get; set; }
 
         public Cell this[BoardHorizontalCoordinates horizontal, BoardVerticalCoordinates vertical] 
         {
@@ -101,6 +64,6 @@ namespace DomainLogic.Models
 
         public static implicit operator (BoardHorizontalCoordinates, BoardVerticalCoordinates)
                                         (CellCoordinate coordinate) =>
-                                        (coordinate.Horizontal, coordinate.Vertical);                                                
+                                        (coordinate.Horizontal, coordinate.Vertical);
     };
 }

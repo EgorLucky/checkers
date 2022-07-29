@@ -16,5 +16,9 @@ namespace DomainLogic.Models
         public AwaitableMove? AwaitableMove { get; set; }
         public Guid? FirstPlayerCode { get; internal set; }
         public Guid? SecondPlayerCode { get; internal set; }
+        public string CheckerCellColor { get; internal set; }
+        public string FirstPlayerCheckerColor { get; internal set; }
+        public string OpponentCheckerColor { get; set; }
+        public string NonPlayableCellColor { get; set; }
     }
 }

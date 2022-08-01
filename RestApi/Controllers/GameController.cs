@@ -84,7 +84,7 @@ namespace RestApi.Controllers
             return BadRequest(startGameResult);
         }
 
-        [HttpPost("move/{gameId}")]
+        [HttpPost("move")]
         public async Task<IActionResult> Move([FromHeader] Guid playerCode, [FromBody] MoveVector move)
         {
             var moveResult = await _service.Move(playerCode, move);

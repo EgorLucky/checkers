@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DomainLogic\DomainLogic.csproj" />
+    <ProjectReference Include="..\Implementations.ArtificialGameAnalyzerRandom\Implementations.ArtificialGameAnalyzerRandom.csproj" />
     <ProjectReference Include="..\Implementations.Mq\Implementations.Mq.csproj" />
     <ProjectReference Include="..\Implementations.Repositories\Implementations.Repositories.csproj" />
   </ItemGroup>

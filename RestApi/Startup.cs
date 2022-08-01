@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
+using Implementations.ArtificialAnalyzerRandom;
 
 namespace RestApi
 {
@@ -39,6 +40,7 @@ namespace RestApi
                 .AddSingleton<IBotNotifier, BotQueueService>()
                 .AddSingleton<Bot>()
                 .AddSingleton<IBotRepository, BotRepository>()
+                .AddSingleton<IArtificialGameAnalyzer, RandomArtificialGameAnalyzer>()
                 .AddHttpClient<IGameServiceClient, GameServiceHttpClient>(c => c.BaseAddress = new Uri("https://localhost:5001"));
 
 

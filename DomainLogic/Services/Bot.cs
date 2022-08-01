@@ -13,10 +13,14 @@ namespace DomainLogic.Services
         private readonly IBotRepository _botRepository;
         private readonly IArtificialGameAnalyzer _gameAnalyzer;
 
-        public Bot(IGameServiceClient service, IBotRepository botRepository)
+        public Bot(
+            IGameServiceClient service, 
+            IBotRepository botRepository, 
+            IArtificialGameAnalyzer gameAnalyzer)
         {
             _service = service;
             _botRepository = botRepository;
+            _gameAnalyzer = gameAnalyzer;
         }
 
         public async Task Register(Guid gameId)

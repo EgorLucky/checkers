@@ -5,6 +5,7 @@ using System;
 using System.Text.Json;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace Implementations.Mq
 {
@@ -23,7 +24,10 @@ namespace Implementations.Mq
             if (response.IsSuccessStatusCode)
             {
                 var responseString = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<GameGetInfoResult>(responseString);
+
+                var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+                options.Converters.Add(new JsonStringEnumConverter());
+                return JsonSerializer.Deserialize<GameGetInfoResult>(responseString, options);
             }
             else
                 throw new Exception();
@@ -34,7 +38,7 @@ namespace Implementations.Mq
             var httpRequest = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri($"/Game/move"),
+                RequestUri = new Uri($"{_client.BaseAddress}Game/move"),
                 Content = new StringContent(JsonSerializer.Serialize(move), System.Text.Encoding.UTF8, "application/json")
             };
 
@@ -43,7 +47,7 @@ namespace Implementations.Mq
             if (response.IsSuccessStatusCode)
             {
                 var responseString = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<object>(responseString);
+                return JsonSerializer.Deserialize<object>(responseString, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             }
             else
                 throw new Exception();
@@ -56,7 +60,7 @@ namespace Implementations.Mq
             if (response.IsSuccessStatusCode)
             {
                 var responseString = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<GameRegisterSecondPlayerResult>(responseString);
+                return JsonSerializer.Deserialize<GameRegisterSecondPlayerResult>(responseString, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             }
             else
                 throw new Exception();

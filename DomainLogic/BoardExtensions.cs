@@ -113,7 +113,7 @@ namespace DomainLogic
                 else if (captureMovesFound == false)
                 {
                     var simpleMoves = searcher.SearchSimpleMoves(cellWithChecker.Coordinate, board, game.FirstPlayerCheckerColor);
-                    result.AddRange(captureMoves);
+                    result.AddRange(simpleMoves);
                 }
 
                 if (cellWithChecker.Coordinate == lastMovedCheckersCell?.Coordinate)

@@ -17,7 +17,7 @@ namespace DomainLogic.Services
             board.Fill(game.FirstPlayerCheckerColor, game.OpponentCheckerColor);
 
             boardState.Board = board;
-            boardState.PossibleMoves = board.FindPossibleMoves(game);
+            boardState.PossibleMoves.AddRange(board.FindPossibleMoves(game));
 
             return boardState;
         }
@@ -49,20 +49,30 @@ namespace DomainLogic.Services
             cellFrom.Checker = null;
             cellTo.Checker = movingChecker;
 
+            //if move with capture
             if(move.CapturableCheckerCoordinate != null)
             {
+                //remove captured checker
                 var cellWithCapturableCell = board[move.CapturableCheckerCoordinate];
                 cellWithCapturableCell.Checker = null;
-            }
-            //find possible moves for player who just moved
-            boardState.PossibleMoves = board.FindPossibleMoves(cellTo);
 
-            if (boardState.PossibleMoves.Any() == false)
-            {
-                //find possible moves for opponent
-                SwitchAwaitableMove(game);
-                boardState.PossibleMoves = board.FindPossibleMoves(game); 
+                var possibleMoves = board.FindPossibleMoves(game, cellTo);
+                //if there are any capture moves for checker which just did capture
+                if(possibleMoves.Any(p => p.CapturableCheckerCoordinate is not null))
+                {
+                    newBoardState.PossibleMoves.AddRange(possibleMoves);
+
+                    return new MoveResult(
+                        Success: true,
+                        NewBoardState: newBoardState,
+                        AwaitableMove: game.AwaitableMove);
+                }
             }
+            
+            //find possible moves for opponent
+            SwitchAwaitableMove(game);
+            newBoardState.PossibleMoves.AddRange(board.FindPossibleMoves(game)); 
+
             //return data
             return new MoveResult(
                 Success: true,

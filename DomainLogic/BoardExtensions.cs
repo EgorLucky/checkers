@@ -57,23 +57,13 @@ namespace DomainLogic
             {
                 Cells = board.Cells.Select(c => new Cell(c.Color, c.Coordinate with { })
                 {
-                    Checker = c.Checker with { }
+                    Checker = c.Checker is not null ? c.Checker with { }: null
                 })
                 .ToList()
             };
         }
 
-        public static List<Move> FindPossibleMoves(this Board board, Game game)
-        {
-            return FindPossibleMoves(board, game, null);
-        }
-
-        public static List<Move> FindPossibleMoves(this Board board, Cell lastMovedCheckersCell)
-        {
-            return FindPossibleMoves(board, null, lastMovedCheckersCell);
-        }
-        //its better to use checker color instead of awaitable move 
-        static List<Move> FindPossibleMoves(Board board, Game game, Cell lastMovedCheckersCell)
+        public static List<Move> FindPossibleMoves(this Board board, Game game, Cell lastMovedCheckersCell = null)
         {
             var checkerColor = game?.AwaitableMove == AwaitableMove.FirstPlayer
                 ? game?.FirstPlayerCheckerColor

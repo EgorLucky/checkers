@@ -143,13 +143,13 @@ namespace Шашки
                 {
                     //create checker
                     var checkerFromCell = cell["checker"];
-                    if (checkerFromCell["color"].ToObject<string>() == "White")
+                    if (checkerFromCell["color"].ToObject<string>() == "#FFFFFF")
                     {
                         var pictureBox = redPictureBoxes.Pop();
                         panel.Controls.Add(pictureBox);
                         red.Add(new Checker(Board, pictureBox, 0)); 
                     }
-                    if (checkerFromCell["color"].ToObject<string>() == "Black")
+                    if (checkerFromCell["color"].ToObject<string>() == "#000000")
                     {
                         var pictureBox = bluePictureBoxes.Pop();
                         panel.Controls.Add(pictureBox);
@@ -159,7 +159,7 @@ namespace Шашки
 
                 var cellColor = cell["color"].ToString();
 
-                if (cellColor == "Black")
+                if (cellColor == "#000000")
                     panel.BackColor = blackCellColor;
                 else panel.BackColor = yellowCellColor;
             }

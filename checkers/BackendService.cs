@@ -18,6 +18,7 @@ namespace Шашки
 
             using (var client = new WebClient())
             {
+                client.Headers[HttpRequestHeader.ContentType] = "application/json";
                 response = await client.UploadDataTaskAsync(new Uri(HostUri + "/Game/Create"), new byte[] { });
             }
 
@@ -30,7 +31,9 @@ namespace Шашки
 
             using (var client = new WebClient())
             {
-                response = await client.UploadDataTaskAsync(new Uri(HostUri + "/Game/CreateWithBot"), new byte[] { });
+                var bytes = System.Text.Encoding.UTF8.GetBytes("{}");
+                client.Headers[HttpRequestHeader.ContentType] = "application/json";
+                response = await client.UploadDataTaskAsync(new Uri(HostUri + "/Game/CreateWithBot"), bytes);
             }
 
             return ToDictionary(response);
@@ -57,7 +60,7 @@ namespace Шашки
             {
                 using (var client = new WebClient())
                 {
-                    client.Headers["Content-Type"] = "application/json";
+                    client.Headers[HttpRequestHeader.ContentType] = "application/json";
                     response = await client.UploadDataTaskAsync(HostUri + $"/Game/startWithBot", Encoding.UTF8.GetBytes(gameId));
                 }
             }

@@ -33,7 +33,7 @@ namespace Implementations.Mq
                 throw new Exception();
         }
 
-        public async Task<object> MakeMove(MoveVector move, Guid playerCode)
+        public async Task<MoveResult> MakeMove(MoveVector move, Guid playerCode)
         {
             var httpRequest = new HttpRequestMessage
             {
@@ -47,7 +47,9 @@ namespace Implementations.Mq
             if (response.IsSuccessStatusCode)
             {
                 var responseString = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<object>(responseString, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+                options.Converters.Add(new JsonStringEnumConverter());
+                return JsonSerializer.Deserialize<MoveResult>(responseString, options);
             }
             else
                 throw new Exception();

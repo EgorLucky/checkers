@@ -9,6 +9,6 @@ namespace DomainLogic.Services
     {
         Task<GameRegisterSecondPlayerResult> RegisterSecondPlayer(Guid gameId);
         Task<GameGetInfoResult> GetInfo(Guid gameId);
-        Task<object> MakeMove(MoveVector move, Guid playerCode);
+        Task<MoveResult> MakeMove(MoveVector move, Guid playerCode);
     }
 }

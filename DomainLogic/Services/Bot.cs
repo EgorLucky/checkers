@@ -52,21 +52,38 @@ namespace DomainLogic.Services
                             .Where(c => c.Coordinate == boardState.PossibleMoves.First().MoveVector.From)
                             .Select(c => c.Checker.Color)
                             .First();
-            var myCheckersCells = board
-                                    .Cells
-                                    .Where(c => c.Checker != null 
-                                                && c.Checker.Color == myColor)
-                                    .ToList();
 
-            var opponentCheckersCells = board
-                                    .Cells
-                                    .Where(c => c.Checker != null
-                                                && c.Checker.Color != myColor)
-                                    .ToList();
+            do
+            {
+                var myCheckersCells = board
+                                        .Cells
+                                        .Where(c => c.Checker != null
+                                                    && c.Checker.Color == myColor)
+                                        .ToList();
 
-            var move = await _gameAnalyzer.CreateMove(myCheckersCells, opponentCheckersCells, boardState.PossibleMoves);
+                var opponentCheckersCells = board
+                                        .Cells
+                                        .Where(c => c.Checker != null
+                                                    && c.Checker.Color != myColor)
+                                        .ToList();
 
-            await _service.MakeMove(move, playerGameData.PlayerCode);
+                var move = await _gameAnalyzer.CreateMove(myCheckersCells, opponentCheckersCells, boardState.PossibleMoves);
+
+                var moveResult = await _service.MakeMove(move, playerGameData.PlayerCode);
+
+                if (moveResult.Success == false)
+                {
+                    //do something
+                    break;
+                }
+
+                if (moveResult.AwaitableMove != Models.AwaitableMove.SecondPlayer)
+                    break;
+
+                boardState = moveResult.NewBoardState;
+                board = boardState.Board;
+
+            } while (true);
         }
     }
 }

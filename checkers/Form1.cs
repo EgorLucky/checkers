@@ -17,7 +17,7 @@ namespace Шашки
         List<Checker> red;// коллекция красных шашек
         List<Checker> blue;//синих шашек
         bool must_kill = false;//флаг, по которому определяется необходимость рубить противника 
-        List<Panel> possible_moves = new List<Panel>();//возможные ходы для выбранной в данный момент шашки
+        List<JToken> possible_moves = new List<JToken>();//возможные ходы для выбранной в данный момент шашки
         List<List<Panel>> possible_killing = new List<List<Panel>>();//коллекции возможных ходов для рубки противника, предназначенные для шашек, которые могут рубить
         List<Checker> who_must_eat=new List<Checker>();//шашки, которые могут рубить
         Checker selected_checker = null;//выбранная в данный момент шашка
@@ -38,6 +38,8 @@ namespace Шашки
 
         private async void Form1_Load(object sender, EventArgs e)
         {
+           
+
             Board = new Panel[,]//внесение ячеек в массив для того, чтобы к ним можно было обращаться по индексу
                 {
                 {p00,p10,p20,p30,p40,p50,p60,p70},{p01,p11,p21,p31,p41,p51,p61,p71},
@@ -53,8 +55,6 @@ namespace Шашки
                 p.Controls.Clear();
                 p.BackColor = Panel.DefaultBackColor;
             }
-
-            //CheckersCreating();
 
             var game = await BackendService.GameCreateWithBot();
             GameId = game["id"];
@@ -80,7 +80,6 @@ namespace Шашки
             AwaitableMove = startRequestResponse["awaitableMove"].ToString();
 
             //check who moves
-
             if (AwaitableMove == "SecondPlayer")
             {
                 //awaiting opponent move
@@ -89,7 +88,7 @@ namespace Шашки
             }
             else
             {
-                
+                this.Text = "Waiting for your move";
             }
         }
 
@@ -127,11 +126,11 @@ namespace Шашки
                 BoardState = JObject.Parse(gameInfo["boardState"]);
         }
 
+        static string[] horizontals = new string[] { "A", "B", "C", "D", "E", "F", "G", "H" };
+        static string[] verticals = new string[] { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight" };
+
         private void CheckersCreating(Newtonsoft.Json.Linq.JToken board)//инициализация шашек
         {
-            var horizontals = new string[] { "A", "B", "C", "D", "E", "F", "G", "H" };
-            var verticals = new string[] { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"};
-
             red = new List<Checker>();
             blue = new List<Checker>();
 
@@ -164,7 +163,7 @@ namespace Шашки
                     {
                         var pictureBox = bluePictureBoxes.Pop();
                         panel.Controls.Add(pictureBox);
-                        red.Add(new Checker(Board, pictureBox, 1));
+                        blue.Add(new Checker(Board, pictureBox, 1));
                     }
                 }
 
@@ -178,56 +177,56 @@ namespace Шашки
         private void panel1_Click(object sender, EventArgs e)// ход на выбранную ячейку
         {
             Panel s = (Panel)sender;
-            if (selected_checker != null&&(possible_moves.Contains(s) || //если шашка выбрана, и либо ячейка, на которую хочет сходить игрок, имеется в коллекции возможных ходов,
-                who_must_eat.Contains(selected_checker)//либо выбранная шашка должна рубить 
-                    && possible_killing[who_must_eat.IndexOf(selected_checker)].Contains(s)))//и выбранная ячейка входит в коллекцию ходов для рубления
-            {
-                if (possible_moves.Contains(s) && !must_kill)//если нужно сделать простой ход
-                {
-                    selected_checker.Move(s);//перемещение шашки
-                    selectedpanel.BorderStyle = BorderStyle.None;
-                    selectedpanel = null;
-                }
-                if (must_kill && who_must_eat.Contains(selected_checker)
-                    && possible_killing[who_must_eat.IndexOf(selected_checker)].Contains(s))//если нужно рубить
-                {
-                    selectedpanel.BorderStyle = BorderStyle.None;
-                    Killing(selected_checker, blue,s);//рубка
-                    if (CheckCheckerOnEating(selected_checker, red) == true)//проверка на то, должна ли шашка после рубки, еще раз рубить
-                    {
-                        must_kill = true;
-                        who_must_eat = new List<Checker> { selected_checker };
-                    }
-                }
-                bool place_to_move_exists = false;
-                foreach (Checker ch in blue)
-                    if (ch.FindPossibleMoves().Count != 0)
-                        place_to_move_exists = true;
+            //if (selected_checker != null&&(possible_moves.Contains(s) || //если шашка выбрана, и либо ячейка, на которую хочет сходить игрок, имеется в коллекции возможных ходов,
+            //    who_must_eat.Contains(selected_checker)//либо выбранная шашка должна рубить 
+            //        && possible_killing[who_must_eat.IndexOf(selected_checker)].Contains(s)))//и выбранная ячейка входит в коллекцию ходов для рубления
+            //{
+            //    if (possible_moves.Contains(s) && !must_kill)//если нужно сделать простой ход
+            //    {
+            //        selected_checker.Move(s);//перемещение шашки
+            //        selectedpanel.BorderStyle = BorderStyle.None;
+            //        selectedpanel = null;
+            //    }
+            //    if (must_kill && who_must_eat.Contains(selected_checker)
+            //        && possible_killing[who_must_eat.IndexOf(selected_checker)].Contains(s))//если нужно рубить
+            //    {
+            //        selectedpanel.BorderStyle = BorderStyle.None;
+            //        Killing(selected_checker, blue,s);//рубка
+            //        if (CheckCheckerOnEating(selected_checker, red) == true)//проверка на то, должна ли шашка после рубки, еще раз рубить
+            //        {
+            //            must_kill = true;
+            //            who_must_eat = new List<Checker> { selected_checker };
+            //        }
+            //    }
+            //    bool place_to_move_exists = false;
+            //    foreach (Checker ch in blue)
+            //        if (ch.FindPossibleMoves().Count != 0)
+            //            place_to_move_exists = true;
 
-                if (blue.Count != 0)//если шашки противника не кончились
-                {
-                    if (!must_kill) //если рубить не нужно
-                    {
-                        CheckOnEating(blue);
-                        if (!place_to_move_exists&&!must_kill) //если больше нет ходов
-                        {
-                            MessageBox.Show("Вы выиграли!");
-                            toolStripButton1_Click(this, new EventArgs());
-                        }
-                        else
-                        { 
-                            Opponent();// ход компьютера
-                            CheckOnEating(red);//проверка на необходимость игроком рубления противника после его хода
-                        }
-                    }
+            //    if (blue.Count != 0)//если шашки противника не кончились
+            //    {
+            //        if (!must_kill) //если рубить не нужно
+            //        {
+            //            CheckOnEating(blue);
+            //            if (!place_to_move_exists&&!must_kill) //если больше нет ходов
+            //            {
+            //                MessageBox.Show("Вы выиграли!");
+            //                toolStripButton1_Click(this, new EventArgs());
+            //            }
+            //            else
+            //            { 
+            //                //Opponent();// ход компьютера
+            //                CheckOnEating(red);//проверка на необходимость игроком рубления противника после его хода
+            //            }
+            //        }
                     
-                }
-                else//если шашки компьютера закончились
-                {
-                    MessageBox.Show("Вы выиграли!");
-                    toolStripButton1_Click(this, new EventArgs());
-                }
-            }
+            //    }
+            //    else//если шашки компьютера закончились
+            //    {
+            //        MessageBox.Show("Вы выиграли!");
+            //        toolStripButton1_Click(this, new EventArgs());
+            //    }
+            //}
         }
         private void Killing(Checker killer,List<Checker> opponents ,Panel newposition)//рубка
         {
@@ -379,66 +378,43 @@ namespace Шашки
                     must_kill = true;//то это значит, что надо обязательно рубить
             }
         }
-        public void Opponent()//ход компьютера
-        {
-            CheckOnEating(blue);//проверка, должен ли компьютер рубить
-            Checker checker_selected=null;//выбираемая компьютером шашка
-            Panel to=null;//выбираемое место для хода
-                if (!must_kill)//если рубить не нужно
-                {
-                    bool[] no_ways = new bool[blue.Count];
-                    for (int i = 0; i < no_ways.Length; i++) no_ways[i] = false;
-                    while (to == null)//выбор шашки и хода
-                    {
-                        checker_selected = blue[(new Random()).Next(blue.Count)];
-                        var pos_moves = checker_selected.FindPossibleMoves();
-                        if (pos_moves.Count != 0)
-                            to = pos_moves[(new Random()).Next(pos_moves.Count)];
-                        else no_ways[Array.IndexOf(blue.ToArray(), checker_selected)] = true;
-                        bool no_way_for_all = true;
-                        foreach (bool n in no_ways) if (n == false) no_way_for_all = false;
-                        if (no_way_for_all) break;
-                    }
-                    if (to != null)
-                        checker_selected.Move(to);//ход
-                }
-                else//если надо рубить
-                {
-                    checker_selected = who_must_eat[(new Random()).Next(who_must_eat.Count)];//выбор шашки из числа тех, кто должен рубить
-                    while (CheckCheckerOnEating(checker_selected, blue) == true)//пока выбранная шашка может рубить
-                    {
-                        int wmk = who_must_eat.IndexOf(checker_selected);
-                        int r = (new Random()).Next(possible_killing[who_must_eat.IndexOf(checker_selected)].Count);
-                        to = possible_killing[wmk][r];//выбор хода
-                        Killing(checker_selected, red,to);
-                    }
-                }
-            CheckOnEating(red);//проверка красных шашек на необходимость рубки
-            bool place_to_move_exists = false;
-            foreach (Checker ch in red)
-                if (ch.FindPossibleMoves().Count != 0)
-                    place_to_move_exists = true;
-            if (red.Count == 0||!place_to_move_exists&&!must_kill)//если шашки игрока закончились или больше нет ходов
-            {
-                MessageBox.Show("Вы проиграли.");
-                toolStripButton1_Click(this, new EventArgs());
-            }
-            must_kill = false;
-        }
+
         private void pictureBox12_Click(object sender, EventArgs e)//выбор пользователем шашки
         {
-            selected_checker = (from u in red where u.ch == sender select u).First(); //выборка шашки, которая соответствует изображению, на которое нажал пользователь
+            selected_checker = (from u in blue where u.ch == sender select u).First(); //выборка шашки, которая соответствует изображению, на которое нажал пользователь
             if (selectedpanel != null || selectedpanel == sender)
                 selectedpanel.BorderStyle = BorderStyle.None;
             selectedpanel = ((Panel)selected_checker.ch.Parent);
             selectedpanel.BorderStyle = BorderStyle.Fixed3D;
             possible_moves.Clear();
-            if (must_kill == false)
-            {
-                possible_moves = selected_checker.FindPossibleMoves();//поиск возможных ходов для данной шашки
-            }
+
+            //search selectedpanel coordinates
+            (var x, var y) = GetBoardPanelIndex(selectedpanel);
+
+            var horizontal = horizontals[x];
+            var vertical = verticals[y];
+
+            //get possible moves where moveFrom == selectedpanel coordinates
+            possible_moves = BoardState["possibleMoves"]
+                .Where(pm => pm["moveVector"]["from"]["horizontal"].ToString() == horizontal
+                    && pm["moveVector"]["from"]["vertical"].ToString() == vertical)
+                .ToList();
+            //if (must_kill == false)
+            //{
+            //    possible_moves =  selected_checker.FindPossibleMoves();//поиск возможных ходов для данной шашки
+            //}
         }
-        
+
+        (int, int) GetBoardPanelIndex(Panel panel)
+        {
+            for(int i = 0; i < Board.GetLength(0); i++)
+                for(int j = 0; j < Board.GetLength(1); j++)
+                    if(Board[i, j] == panel) return (i, j);
+
+            throw new Exception();
+        }
+
+
         private void toolStripButton1_Click(object sender, EventArgs e)//Начать новую игру
         {
             foreach(Panel cell in Board)
@@ -471,8 +447,8 @@ namespace Шашки
             must_kill = false;
             who_must_eat.Clear();
             possible_killing.Clear();
-            if ((new Random()).Next(2) % 2 == 0)
-                Opponent();
+            //if ((new Random()).Next(2) % 2 == 0)
+                //Opponent();
         }
     }
     public class Checker// класс шашки

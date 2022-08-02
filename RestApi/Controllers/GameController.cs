@@ -92,5 +92,12 @@ namespace RestApi.Controllers
             return Ok(moveResult);
         }
 
+        [HttpPost("moveWithBot")]
+        public async Task<IActionResult> MoveWithBot([FromHeader] Guid playerCode, [FromBody] MoveVector move)
+        {
+            var moveResult = await _service.MoveWithBot(playerCode, move);
+
+            return Ok(moveResult);
+        }
     }
 }

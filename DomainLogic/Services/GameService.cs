@@ -166,8 +166,8 @@ namespace DomainLogic.Services
 
             if (result.Success)
             {
-                await _repository.Update(game);
                 await _gameHistoryRepository.SaveBoardState(result.NewBoardState);
+                await _repository.Update(game);
             }
             else
             {
@@ -177,6 +177,16 @@ namespace DomainLogic.Services
             }
 
             return result;
+        }
+
+        public async Task<MoveResult> MoveWithBot(Guid playerCode, MoveVector move)
+        {
+            var moveResult = await Move(playerCode, move);
+
+            if (moveResult is { Success: true, AwaitableMove: AwaitableMove.SecondPlayer })
+                await _botNotifier.MoveNotify(moveResult.NewBoardState.GameId);
+
+            return moveResult;
         }
     }
 }

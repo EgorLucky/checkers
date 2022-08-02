@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -25,6 +26,8 @@ namespace Шашки
         string FirstPlayerCode;
         string GameState;
         string AwaitableMove;
+        private JObject BoardState;
+
         public Form1()
         {
             InitializeComponent();
@@ -70,8 +73,6 @@ namespace Шашки
             //start game
             var startRequestResponse = await BackendService.GameStartWithBot(FirstPlayerCode);
 
-            ///todo: show board
-
             var board = startRequestResponse["boardState"]["board"];
 
             CheckersCreating(board);
@@ -106,6 +107,13 @@ namespace Шашки
                     await Task.Delay(100);
             }
 
+            foreach (Panel cell in Board)
+            {
+                cell.Controls.Clear();//очистка доски
+            }
+
+            CheckersCreating(BoardState["board"]);
+
             this.Text = "Waiting for your move";
         }
 
@@ -114,6 +122,9 @@ namespace Шашки
             var gameInfo = await BackendService.GameGetInfo(GameId);
             GameState = gameInfo["state"];
             AwaitableMove = gameInfo["awaitableMove"];
+
+            if(!string.IsNullOrEmpty(gameInfo["boardState"]))
+                BoardState = JObject.Parse(gameInfo["boardState"]);
         }
 
         private void CheckersCreating(Newtonsoft.Json.Linq.JToken board)//инициализация шашек
@@ -163,21 +174,6 @@ namespace Шашки
                     panel.BackColor = blackCellColor;
                 else panel.BackColor = yellowCellColor;
             }
-
-            //red = new List<Checker>
-            //{
-            //    new Checker(Board,pictureBox1,0), new Checker(Board,pictureBox2,0), new Checker(Board,pictureBox3,0),
-            //    new Checker(Board,pictureBox4,0),new Checker(Board,pictureBox5,0),new Checker(Board,pictureBox6,0),
-            //    new Checker(Board,pictureBox7,0),new Checker(Board,pictureBox8,0),new Checker(Board,pictureBox9,0),
-            //    new Checker(Board,pictureBox10,0),new Checker(Board,pictureBox11,0),new Checker(Board,pictureBox12,0)
-            //};
-            //blue = new List<Checker>
-            //{
-            //    new Checker(Board,pictureBox13,1), new Checker(Board,pictureBox14,1), new Checker(Board,pictureBox15,1),
-            //    new Checker(Board,pictureBox16,1),new Checker(Board,pictureBox17,1),new Checker(Board,pictureBox18,1),
-            //    new Checker(Board,pictureBox19,1),new Checker(Board,pictureBox20,1),new Checker(Board,pictureBox21,1),
-            //    new Checker(Board,pictureBox22,1),new Checker(Board,pictureBox23,1),new Checker(Board,pictureBox24,1)
-            //};
         }
         private void panel1_Click(object sender, EventArgs e)// ход на выбранную ячейку
         {

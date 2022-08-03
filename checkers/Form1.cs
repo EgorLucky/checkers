@@ -159,13 +159,25 @@ namespace Шашки
                     {
                         var pictureBox = redPictureBoxes.Pop();
                         panel.Controls.Add(pictureBox);
+                        var checker = new Checker(Board, pictureBox, 0);
+                        if (checkerFromCell["role"].ToString() == "King")
+                        { 
+                            checker.queen = true;
+                            checker.ch.Image = Properties.Resources.redqueen; 
+                        }
                         red.Add(new Checker(Board, pictureBox, 0)); 
                     }
                     if (checkerFromCell["color"].ToObject<string>() == "#000000")
                     {
                         var pictureBox = bluePictureBoxes.Pop();
                         panel.Controls.Add(pictureBox);
-                        blue.Add(new Checker(Board, pictureBox, 1));
+                        var checker = new Checker(Board, pictureBox, 1);
+                        if (checkerFromCell["role"].ToString() == "King")
+                        {
+                            checker.queen = true;
+                            checker.ch.Image = Properties.Resources.bluequeen;
+                        }
+                        blue.Add(checker);
                     }
                 }
 

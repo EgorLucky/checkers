@@ -47,10 +47,18 @@ namespace DomainLogic.Services
 
             var movingChecker = cellFrom.Checker;
             cellFrom.Checker = null;
+            
+            var boardVerticalCoordinates = Enum.GetValues<BoardVerticalCoordinates>();
+            if(movingChecker.BoardSide == BoardSide.FirstSide && cellTo.Coordinate.Vertical == boardVerticalCoordinates.Max() ||
+                movingChecker.BoardSide == BoardSide.SecondSide && cellTo.Coordinate.Vertical == boardVerticalCoordinates.Min())
+            {
+                movingChecker = movingChecker with { Role = CheckerRole.King };
+            }
+
             cellTo.Checker = movingChecker;
 
             //if move with capture
-            if(move.CapturableCheckerCoordinate != null)
+            if (move.CapturableCheckerCoordinate != null)
             {
                 //remove captured checker
                 var cellWithCapturableCell = board[move.CapturableCheckerCoordinate];

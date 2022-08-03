@@ -71,7 +71,26 @@ namespace Шашки
 
             return ToJObject(response);
         }
+        internal static async Task<JObject> GameMoveWithBot(string firstPlayerCode, JToken moveVector)
+        {
+            var response = default(byte[]);
 
+            try
+            {
+                using (var client = new WebClient())
+                {
+                    client.Headers[HttpRequestHeader.ContentType] = "application/json";
+                    client.Headers["playerCode"] = firstPlayerCode;
+                    response = await client.UploadDataTaskAsync(HostUri + $"/Game/moveWithBot", Encoding.UTF8.GetBytes(moveVector.ToString()));
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+            return ToJObject(response);
+        }
 
         static Dictionary<string, string> ToDictionary(byte[] bytes)
         {
@@ -92,5 +111,7 @@ namespace Шашки
 
             return JObject.Parse(responseString);
         }
+
+        
     }
 }

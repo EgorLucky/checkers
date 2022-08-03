@@ -26,7 +26,7 @@ namespace Шашки
         string FirstPlayerCode;
         string GameState;
         string AwaitableMove;
-        private JObject BoardState;
+        private JToken BoardState;
 
         public Form1()
         {
@@ -88,6 +88,7 @@ namespace Шашки
             }
             else
             {
+                BoardState = startRequestResponse["boardState"];
                 this.Text = "Waiting for your move";
             }
         }
@@ -124,6 +125,10 @@ namespace Шашки
 
             if(!string.IsNullOrEmpty(gameInfo["boardState"]))
                 BoardState = JObject.Parse(gameInfo["boardState"]);
+            else
+            {
+
+            }
         }
 
         static string[] horizontals = new string[] { "A", "B", "C", "D", "E", "F", "G", "H" };
@@ -174,210 +179,47 @@ namespace Шашки
                 else panel.BackColor = yellowCellColor;
             }
         }
-        private void panel1_Click(object sender, EventArgs e)// ход на выбранную ячейку
+        private async void panel1_Click(object sender, EventArgs e)// ход на выбранную ячейку
         {
             Panel s = (Panel)sender;
-            //if (selected_checker != null&&(possible_moves.Contains(s) || //если шашка выбрана, и либо ячейка, на которую хочет сходить игрок, имеется в коллекции возможных ходов,
-            //    who_must_eat.Contains(selected_checker)//либо выбранная шашка должна рубить 
-            //        && possible_killing[who_must_eat.IndexOf(selected_checker)].Contains(s)))//и выбранная ячейка входит в коллекцию ходов для рубления
-            //{
-            //    if (possible_moves.Contains(s) && !must_kill)//если нужно сделать простой ход
-            //    {
-            //        selected_checker.Move(s);//перемещение шашки
-            //        selectedpanel.BorderStyle = BorderStyle.None;
-            //        selectedpanel = null;
-            //    }
-            //    if (must_kill && who_must_eat.Contains(selected_checker)
-            //        && possible_killing[who_must_eat.IndexOf(selected_checker)].Contains(s))//если нужно рубить
-            //    {
-            //        selectedpanel.BorderStyle = BorderStyle.None;
-            //        Killing(selected_checker, blue,s);//рубка
-            //        if (CheckCheckerOnEating(selected_checker, red) == true)//проверка на то, должна ли шашка после рубки, еще раз рубить
-            //        {
-            //            must_kill = true;
-            //            who_must_eat = new List<Checker> { selected_checker };
-            //        }
-            //    }
-            //    bool place_to_move_exists = false;
-            //    foreach (Checker ch in blue)
-            //        if (ch.FindPossibleMoves().Count != 0)
-            //            place_to_move_exists = true;
 
-            //    if (blue.Count != 0)//если шашки противника не кончились
-            //    {
-            //        if (!must_kill) //если рубить не нужно
-            //        {
-            //            CheckOnEating(blue);
-            //            if (!place_to_move_exists&&!must_kill) //если больше нет ходов
-            //            {
-            //                MessageBox.Show("Вы выиграли!");
-            //                toolStripButton1_Click(this, new EventArgs());
-            //            }
-            //            else
-            //            { 
-            //                //Opponent();// ход компьютера
-            //                CheckOnEating(red);//проверка на необходимость игроком рубления противника после его хода
-            //            }
-            //        }
-                    
-            //    }
-            //    else//если шашки компьютера закончились
-            //    {
-            //        MessageBox.Show("Вы выиграли!");
-            //        toolStripButton1_Click(this, new EventArgs());
-            //    }
-            //}
-        }
-        private void Killing(Checker killer,List<Checker> opponents ,Panel newposition)//рубка
-        {
-            var o = killer.Coordinate();
-            killer.Move(newposition);
-            var n = killer.Coordinate();
-            if (killer.queen == true)//рубка, если выбранная шашка является дамкой
+            (var x, var y) = GetBoardPanelIndex(s);
+
+            var horizontal = horizontals[x];
+            var vertical = verticals[y];
+
+            var moveVector = possible_moves
+                .Where(pm => pm["moveVector"]["to"]["horizontal"].ToString() == horizontal &&
+                             pm["moveVector"]["to"]["vertical"].ToString() == vertical)
+                .Select(pm => pm["moveVector"])
+                .FirstOrDefault();
+
+            if (selected_checker != null && moveVector != null) //если шашка выбрана, и либо ячейка, на которую хочет сходить игрок, имеется в коллекции возможных ходов,
             {
-                int sx = Math.Sign(n[0] - o[0]), sy = Math.Sign(n[1] - o[1]);
-                for (int i = o[0], j = o[1]; i != n[0] && j != n[1]; i += sx, j += sy)
-                    if (Board[i, j].Controls.Count != 0)
-                    {
-                        opponents.Remove((from u in opponents where u.ch == Board[i, j].Controls[0] select u).First());
-                        Board[i, j].Controls.Clear();
-                        break;
-                    }
-            }
-            else// рубка, если шашка не является дамкой
-            {
-                opponents.Remove((from u in opponents where u.ch == Board[(o[0] + n[0]) / 2, ((o[1] + n[1]) / 2)].Controls[0] select u).First());
-                Board[(o[0] + n[0]) / 2, ((o[1] + n[1]) / 2)].Controls.Clear();
-            }
-            must_kill = false;
-            who_must_eat.Clear();
-            possible_killing.Clear();
-        }
-        public bool CheckCheckerOnEating(Checker ch, List<Checker> team)//проверка шашки на то, должна ли она есть?
-        {
-            List<Panel> w = new List<Panel>();//возможные ходы для рубки для проверяемой шашки
-            var co = ch.Coordinate();
-            int i = co[0], j = co[1];
-            bool a = false, b = false, c = false, d = false;
-            if (ch.queen == true)//если шашка дамка
-            {
-                if(i > 1 && j > 1)//проверка влево вниз
+                var gameMoveWithBotResult = await BackendService.GameMoveWithBot(FirstPlayerCode, moveVector);
+
+                if (gameMoveWithBotResult["success"].ToString() != "True")
                 {
-                    for(int I=i-1,J=j-1;I>0&&J>0;I--,J--)
-                    {
-                        if (Board[I, J].Controls.Count != 0)
-                        {
-                            if (a=(from u in team where u.ch == Board[I, J].Controls[0] select u).Count() == 0
-                            && I != 0 && J != 0 && Board[--I, --J].Controls.Count == 0)
-                            {
-                                w.Add(Board[I, J]);
-                                for(I=I-1,J=J-1; I >= 0 && J >= 0&&Board[I,J].Controls.Count==0;I--,J--)
-                                {
-                                    w.Add(Board[I, J]);
-                                }
-                            }
-                            break;
-                        }
-                    }
+                    MessageBox.Show($"Ошибка: {gameMoveWithBotResult["message"]}");
                 }
-                if (i > 1 && j <= 5)//проверка влево вверх
+
+                if (gameMoveWithBotResult["newBoardState"] != null && gameMoveWithBotResult["newBoardState"].Type != JTokenType.Null)
                 {
-                    for (int I = i - 1, J = j + 1; I > 0 && J < 7; I--, J++)
-                    {
-                        if (Board[I, J].Controls.Count != 0)
-                        {
-                            if (b = (from u in team where u.ch == Board[I, J].Controls[0] select u).Count() == 0
-                            && I != 0 && J != 7 && Board[--I, ++J].Controls.Count == 0)
-                            {
-                                w.Add(Board[I, J]);
-                                for (I = I - 1, J = J + 1; I > 0 && J <= 7 && Board[I, J].Controls.Count == 0; I--, J++)
-                                {
-                                    w.Add(Board[I, J]);
-                                }
-                            }
-                            break;
-                        }
-                    }
+                    BoardState = gameMoveWithBotResult["newBoardState"];
+                    CheckersCreating(BoardState["board"]);
                 }
-                if (i <= 5 && j <= 5)//проверка вправо вверх
+
+                if (gameMoveWithBotResult["awaitableMove"].ToString() == "FirstPlayer")
                 {
-                    for (int I = i + 1, J = j + 1; I < 7 && J < 7; I++, J++)
-                    {
-                        if (Board[I, J].Controls.Count != 0)
-                        {
-                            if (c = (from u in team where u.ch == Board[I, J].Controls[0] select u).Count() == 0
-                            && I != 7 && J != 7 && Board[++I, ++J].Controls.Count == 0)
-                            {
-                                w.Add(Board[I, J]);
-                                for (I = I + 1, J = J + 1; I <= 7 && J <= 7 && Board[I, J].Controls.Count == 0; I++, J++)
-                                {
-                                    w.Add(Board[I, J]);
-                                }
-                            }
-                            break;
-                        }
-                    }
+                    Text = "Waiting for your move";
                 }
-                if (i <= 5 && j > 1)//проверка вправо вниз
+                else
                 {
-                    for (int I = i + 1, J = j - 1; I < 7 && J >0; I++, J--)
-                    {
-                        if (Board[I, J].Controls.Count != 0)
-                        {
-                            if (d = (from u in team where u.ch == Board[I, J].Controls[0] select u).Count() == 0
-                            && I != 7 && J != 0 && Board[++I, --J].Controls.Count == 0)
-                            {
-                                w.Add(Board[I, J]);
-                                for (I = I + 1, J = J - 1; I <= 7 && J >=0 && Board[I, J].Controls.Count == 0; I++, J--)
-                                {
-                                    w.Add(Board[I, J]);
-                                }
-                            }
-                            break;
-                        }
-                    }
+                    await WaitForOpponentMove();
                 }
             }
-            else//проверка если шашка не является дамкой
-            {
-                a = (i > 1 && j > 1) && Board[i - 1, j - 1].Controls.Count > 0 &&
-                        (from u in team where u.ch == Board[i - 1, j - 1].Controls[0] select u).Count() == 0
-                        && Board[i - 2, j - 2].Controls.Count == 0;
-                if (a) w.Add(Board[i - 2, j - 2]);
-                b = (i > 1 && j <= 5) && Board[i - 1, j + 1].Controls.Count > 0 &&
-                        (from u in team where u.ch == Board[i - 1, j + 1].Controls[0] select u).Count() == 0
-                        && Board[i - 2, j + 2].Controls.Count == 0;
-                if (b) w.Add(Board[i - 2, j + 2]);
-                c = (i <= 5 && j <= 5) && Board[i + 1, j + 1].Controls.Count > 0 &&
-                        (from u in team where u.ch == Board[i + 1, j + 1].Controls[0] select u).Count() == 0
-                        && Board[i + 2, j + 2].Controls.Count == 0;
-                if (c) w.Add(Board[i + 2, j + 2]);
-                d = (i <= 5 && j > 1) && Board[i + 1, j - 1].Controls.Count > 0 &&
-                        (from u in team where u.ch == Board[i + 1, j - 1].Controls[0] select u).Count() == 0
-                        && Board[i + 2, j - 2].Controls.Count == 0;
-                if (d) w.Add(Board[i + 2, j - 2]);
-                
-            }
-            if (a || b || c || d) //если ходы для рубки были найдены
-            {
-                if(!who_must_eat.Contains(ch))
-                who_must_eat.Add(ch);//шашка добавляется в число тех, кто может рубить
-                possible_killing.Add(w);//найденные ходы добавляются в коллекцию ходов для рубки
-                return true;
-            }
-            else return false;
         }
 
-        public void CheckOnEating(List<Checker> team)//проверка всех шашек с одной команды на необходимость рубки
-        {
-            who_must_eat.Clear();
-            possible_killing.Clear();
-            foreach (Checker ch in team)
-            {
-                if (CheckCheckerOnEating(ch, team) == true)//если хоть одна шашка из команды может рубить
-                    must_kill = true;//то это значит, что надо обязательно рубить
-            }
-        }
 
         private void pictureBox12_Click(object sender, EventArgs e)//выбор пользователем шашки
         {
@@ -464,84 +306,6 @@ namespace Шашки
             ch = c;
             color = (Col)col;
             Board = b;
-        }
-        public List<int> Coordinate()//получение координатов шашки на доске
-        {
-            int i = 0, j = 0; bool s = true;
-            for (i = 0; i <= Board.GetLength(0) - 1 && s; i++)
-                for (j = 0; j <= Board.GetLength(1) - 1 && s; j++)
-                    if (Board[i, j].Controls.Count > 0 && Board[i, j] == location)
-                        s = false;
-            return new List<int> { i - 1, j - 1 };
-        }
-        public List<Panel> FindPossibleMoves()//поиск возможных простых ходов (без рубки)
-        {
-            var co = Coordinate();
-            int i = co[0], j = co[1];
-            List<Panel> result = new List<Panel>();
-            if (!queen)//если шашка не дамка
-            {
-                if (color == Col.Red) //если цвет красный
-                {
-                    if ((i != 0 && j != Board.GetLength(1) - 1) && Board[i - 1, j + 1].Controls.Count == 0)
-                        result.Add(Board[i - 1, j + 1]);
-                    if ((i != Board.GetLength(0) - 1 && j != Board.GetLength(1) - 1) && Board[i + 1, j + 1].Controls.Count == 0)
-                        result.Add(Board[i + 1, j + 1]);
-                }
-                else//если синий
-                {
-                    if ((i != 0 && j != 0) && Board[i - 1, j - 1].Controls.Count == 0)
-                        result.Add(Board[i - 1, j - 1]);
-                    if ((i != Board.GetLength(0) - 1 && j != 0) && Board[i + 1, j - 1].Controls.Count == 0)
-                        result.Add(Board[i + 1, j - 1]);
-                }
-            }
-            else//если шашка дамка
-            {
-                for (int I = i - 1, J = j + 1; I >= 0 && J < 8; I--, J++)//влево вверх
-                {
-                    if (Board[I, J].Controls.Count != 0)
-                        break;
-                    else
-                        result.Add(Board[I, J]);
-                }
-                for (int I = i + 1, J = j + 1; I < 8 && J < 8; I++, J++)//вправо вверх
-                {
-                    if (Board[I, J].Controls.Count != 0)
-                        break;
-                    else
-                        result.Add(Board[I, J]);
-                }
-                for (int I = i + 1, J = j - 1; I < 8 && J >= 0; I++, J--)//вправо вниз
-                {
-                    if (Board[I, J].Controls.Count != 0)
-                        break;
-                    else
-                        result.Add(Board[I, J]);
-                }
-                for (int I = i - 1, J = j - 1; I >= 0 && J >= 0; I--, J--)//влево вниз
-                {
-                    if (Board[I, J].Controls.Count != 0)
-                        break;
-                    else
-                        result.Add(Board[I, J]);
-                }
-            }
-            return result;
-        }
-        public void Move(Panel to)// перенос шашки 
-        {
-            to.Controls.Add(ch);
-            if (color == Col.Red && Coordinate()[1] == 7 && !queen)
-            {
-                queen = true;
-                ch.Image = Properties.Resources.redqueen;
-            }
-            if (color == Col.Blue && Coordinate()[1] == 0 && !queen)
-            {
-                queen = true;
-                ch.Image = Properties.Resources.bluequeen;
-            }
         }
     }
 }

@@ -10,11 +10,19 @@ namespace DomainLogic
     internal static class BoardExtensions
     {
         const int playerCheckersCount = 12;
-        public static void Fill(this Board board, string firstPlayerCheckerColor, string secondPlayerCheckerColor)
+        public static void Fill(this Board board, string firstPlayerCheckerColor, string secondPlayerCheckerColor, BoardSide firstPlayerBoardSide, BoardSide secondPlayerBoardSide)
         {
             var isFirstCellWithChecker = true;
             var currentSideCheckersNotPlacedCount = playerCheckersCount;
-            var checkerColor = firstPlayerCheckerColor;
+            
+            var checkerColor = firstPlayerBoardSide == BoardSide.FirstSide
+                ? firstPlayerCheckerColor
+                : secondPlayerCheckerColor;
+
+            var opponentCheckerColor = firstPlayerBoardSide == BoardSide.FirstSide
+                ? secondPlayerCheckerColor
+                : firstPlayerCheckerColor;
+
             var isCellWithChecker = isFirstCellWithChecker;
 
             foreach (var vertical in Enum.GetValues<BoardVerticalCoordinates>())
@@ -32,14 +40,17 @@ namespace DomainLogic
                         && vertical != BoardVerticalCoordinates.Four
                         && vertical != BoardVerticalCoordinates.Five)
                     {
-                        cell.Checker = new Checker(checkerColor);
+                        var boardSide = checkerColor == firstPlayerCheckerColor
+                            ? firstPlayerBoardSide
+                            : secondPlayerBoardSide;
+                        cell.Checker = new Checker(checkerColor, boardSide);
 
                         currentSideCheckersNotPlacedCount--;
 
                         if (currentSideCheckersNotPlacedCount == 0)
                         {
                             currentSideCheckersNotPlacedCount = playerCheckersCount;
-                            checkerColor = secondPlayerCheckerColor;
+                            checkerColor = opponentCheckerColor;
                         }
                     }
 
@@ -102,7 +113,7 @@ namespace DomainLogic
                 }
                 else if (captureMovesFound == false)
                 {
-                    var simpleMoves = searcher.SearchSimpleMoves(cellWithChecker.Coordinate, board, game.FirstPlayerCheckerColor);
+                    var simpleMoves = searcher.SearchSimpleMoves(cellWithChecker.Coordinate, board);
                     result.AddRange(simpleMoves);
                 }
 

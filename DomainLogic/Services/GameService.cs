@@ -40,7 +40,9 @@ namespace DomainLogic.Services
                 FirstPlayerCheckerColor = dto.MyCeckerColor,
                 OpponentCheckerColor = dto.OpponentCheckerColor,
                 CheckerCellColor = dto.CheckerCellColor,
-                NonPlayableCellColor = dto.NonPlayableCellColor
+                NonPlayableCellColor = dto.NonPlayableCellColor,
+                FirstPlayerBoardSide = dto.FirstPlayerBoardSide,
+                SecondPlayerBoardSide = dto.SecondPlayerBoardSide
             };
 
             await _repository.Create(game);

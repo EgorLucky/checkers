@@ -135,7 +135,7 @@ namespace DomainLogic
             }
         }
 
-        public List<Move> SearchSimpleMoves(CellCoordinate coordinate, Board board, string firstPlayerCheckerColor)
+        public List<Move> SearchSimpleMoves(CellCoordinate coordinate, Board board)
         {
             var result = new List<Move>();
 

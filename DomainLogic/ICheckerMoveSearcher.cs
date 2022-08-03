@@ -10,6 +10,6 @@ namespace DomainLogic
     {
         List<Move> SearchCaptureMoves(CellCoordinate coordinate, Board board);
 
-        List<Move> SearchSimpleMoves(CellCoordinate coordinate, Board board, string firstPlayerCheckerColor);
+        List<Move> SearchSimpleMoves(CellCoordinate coordinate, Board board);
     }
 }

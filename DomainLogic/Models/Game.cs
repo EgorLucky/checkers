@@ -20,5 +20,7 @@ namespace DomainLogic.Models
         public string FirstPlayerCheckerColor { get; internal set; }
         public string OpponentCheckerColor { get; set; }
         public string NonPlayableCellColor { get; set; }
+        public BoardSide FirstPlayerBoardSide { get; set; }
+        public BoardSide SecondPlayerBoardSide { get; set; }
     }
 }

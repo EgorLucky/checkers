@@ -49,7 +49,7 @@ namespace DomainLogic
             return result;
         }
 
-        public List<Move> SearchSimpleMoves(CellCoordinate coordinate, Board board, string firstPlayerCheckerColor)
+        public List<Move> SearchSimpleMoves(CellCoordinate coordinate, Board board)
         {
             var result = new List<Move>();
             var cell = board[coordinate];
@@ -67,7 +67,7 @@ namespace DomainLogic
                         verticalSign));
 
             //TODO: make property to know checker vector
-            if (checker.Color == firstPlayerCheckerColor)
+            if (checker.BoardSide == BoardSide.FirstSide)
             {
                 //then search moves up from start of board
                 searchSimpleDelegate(

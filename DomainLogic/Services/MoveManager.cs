@@ -14,7 +14,7 @@ namespace DomainLogic.Services
             var boardState = CreateBoardState(game.Id);
 
             var board = new Board(game.CheckerCellColor, game.NonPlayableCellColor);
-            board.Fill(game.FirstPlayerCheckerColor, game.OpponentCheckerColor);
+            board.Fill(game.FirstPlayerCheckerColor, game.OpponentCheckerColor, game.FirstPlayerBoardSide, game.SecondPlayerBoardSide);
 
             boardState.Board = board;
             boardState.PossibleMoves.AddRange(board.FindPossibleMoves(game));

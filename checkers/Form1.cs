@@ -16,10 +16,7 @@ namespace Шашки
         Panel[,] Board;// массив из ячеек на доске
         List<Checker> red;// коллекция красных шашек
         List<Checker> blue;//синих шашек
-        bool must_kill = false;//флаг, по которому определяется необходимость рубить противника 
         List<JToken> possible_moves = new List<JToken>();//возможные ходы для выбранной в данный момент шашки
-        List<List<Panel>> possible_killing = new List<List<Panel>>();//коллекции возможных ходов для рубки противника, предназначенные для шашек, которые могут рубить
-        List<Checker> who_must_eat=new List<Checker>();//шашки, которые могут рубить
         Checker selected_checker = null;//выбранная в данный момент шашка
         Panel selectedpanel = null;//ячейка, на которой находится выбранная в данный момент шашка
         string GameId;
@@ -241,10 +238,6 @@ namespace Шашки
                 .Where(pm => pm["moveVector"]["from"]["horizontal"].ToString() == horizontal
                     && pm["moveVector"]["from"]["vertical"].ToString() == vertical)
                 .ToList();
-            //if (must_kill == false)
-            //{
-            //    possible_moves =  selected_checker.FindPossibleMoves();//поиск возможных ходов для данной шашки
-            //}
         }
 
         (int, int) GetBoardPanelIndex(Panel panel)
@@ -286,11 +279,6 @@ namespace Шашки
                         c++;
                     }
             }
-            must_kill = false;
-            who_must_eat.Clear();
-            possible_killing.Clear();
-            //if ((new Random()).Next(2) % 2 == 0)
-                //Opponent();
         }
     }
     public class Checker// класс шашки

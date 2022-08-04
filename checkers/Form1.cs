@@ -165,6 +165,11 @@ namespace Шашки
                             checker.queen = true;
                             checker.ch.Image = Properties.Resources.redqueen; 
                         }
+                        else
+                        {
+                            checker.queen = false;
+                            checker.ch.Image = Properties.Resources.RedCheck;
+                        }
                         red.Add(new Checker(Board, pictureBox, 0)); 
                     }
                     if (checkerFromCell["color"].ToObject<string>() == "#000000")
@@ -176,6 +181,11 @@ namespace Шашки
                         {
                             checker.queen = true;
                             checker.ch.Image = Properties.Resources.bluequeen;
+                        }
+                        else
+                        {
+                            checker.queen = false;
+                            checker.ch.Image = Properties.Resources.bluecheck;
                         }
                         blue.Add(checker);
                     }
@@ -250,6 +260,14 @@ namespace Шашки
                 .Where(pm => pm["moveVector"]["from"]["horizontal"].ToString() == horizontal
                     && pm["moveVector"]["from"]["vertical"].ToString() == vertical)
                 .ToList();
+
+            richTextBox1.Text = "";
+            foreach (var pm in possible_moves) {
+                richTextBox1.Text += pm["moveVector"]["from"]["horizontal"].ToString()
+                                    + pm["moveVector"]["from"]["vertical"].ToString() + " ----> "
+                                    + pm["moveVector"]["to"]["horizontal"].ToString()
+                                    + pm["moveVector"]["to"]["vertical"].ToString() + "\n";
+            }
         }
 
         (int, int) GetBoardPanelIndex(Panel panel)
@@ -269,28 +287,7 @@ namespace Шашки
                 cell.Controls.Clear();//очистка доски
             }
             CheckersCreating(null);//создание шашек
-            int c = 0;
-            for(int i =0;i<3;i++)//размещение красных шашек
-            {
-                for (int j = 0; j < 8; j++)
-                    if (Board[j, i].BackColor != Color.Black)
-                    {
-                        Board[j, i].Controls.Add(red[c].ch);
-                        red[c].ch.Image = Properties.Resources.RedCheck;
-                        c++;
-                    }
-            }
-            c = 0;
-            for (int i = 7; i >4; i--)//размещение синих шашек
-            {
-                for (int j = 0; j < 8; j++)
-                    if (Board[j,i].BackColor !=Color.Black)
-                    {
-                        Board[j, i].Controls.Add(blue[c].ch);
-                        blue[c].ch.Image = Properties.Resources.bluecheck;
-                        c++;
-                    }
-            }
+
         }
     }
     public class Checker// класс шашки

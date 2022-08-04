@@ -112,7 +112,7 @@ namespace DomainLogic
 
             for (i = changeHorizontalCounter(x), j = changeVerticalCounter(y);
                 firstCycleCondition(i, j);
-                i = changeHorizontalCounter(i), changeVerticalCounter(j))
+                i = changeHorizontalCounter(i), j = changeVerticalCounter(j))
             {
                 if (board[i, j].Checker != null)
                 {
@@ -125,8 +125,7 @@ namespace DomainLogic
                     {
                         result.Add(new Move((coordinate, (i, j)), currentCoordinate));
                         for (i = changeHorizontalCounter(i), j = changeVerticalCounter(j);
-                            secondCycleCondition(i, j)
-                            && board[i, j].Checker == null;
+                            secondCycleCondition(i, j) && board[i, j].Checker == null;
                             i = changeHorizontalCounter(i), j = changeVerticalCounter(j))
                             result.Add(new Move((coordinate, (i, j)), currentCoordinate));
                     }
@@ -204,7 +203,7 @@ namespace DomainLogic
 
             for (i = changeHorizontalCounter(x), j = changeVerticalCounter(y);
                 cycleCondition(i, j);
-                changeHorizontalCounter(i), changeVerticalCounter(j))
+                i = changeHorizontalCounter(i), j = changeVerticalCounter(j))
             {
                 if (board[i, j].Checker != null)
                     break;

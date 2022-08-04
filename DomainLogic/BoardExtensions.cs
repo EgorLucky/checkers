@@ -110,6 +110,7 @@ namespace DomainLogic
                 {
                     result.AddRange(captureMoves);
                     captureMovesFound = true;
+                    result.RemoveAll(r => r.CapturableCheckerCoordinate == null);
                 }
                 else if (captureMovesFound == false)
                 {

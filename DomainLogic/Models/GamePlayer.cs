@@ -1,6 +1,6 @@
 ﻿namespace DomainLogic.Models
 {
-    public enum AwaitableMove
+    public enum GamePlayer
     {
         FirstPlayer,
         SecondPlayer

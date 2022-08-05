@@ -76,7 +76,7 @@ namespace DomainLogic
 
         public static List<Move> FindPossibleMoves(this Board board, Game game, Cell lastMovedCheckersCell = null)
         {
-            var checkerColor = game?.AwaitableMove == AwaitableMove.FirstPlayer
+            var checkerColor = game?.AwaitableMove == GamePlayer.FirstPlayer
                 ? game?.FirstPlayerCheckerColor
                 : game?.OpponentCheckerColor;
 

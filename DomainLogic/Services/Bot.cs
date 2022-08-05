@@ -77,7 +77,7 @@ namespace DomainLogic.Services
                     break;
                 }
 
-                if (moveResult.AwaitableMove != Models.AwaitableMove.SecondPlayer)
+                if (moveResult.AwaitableMove != Models.GamePlayer.SecondPlayer)
                     break;
 
                 boardState = moveResult.NewBoardState;

@@ -4,5 +4,5 @@
         bool Success = false, 
         string Message = "",
         BoardState NewBoardState = null,
-        AwaitableMove? AwaitableMove = null);
+        GamePlayer? AwaitableMove = null);
 }

@@ -23,6 +23,8 @@ namespace Шашки
         string FirstPlayerCode;
         string GameState;
         string AwaitableMove;
+        private bool Finished;
+        private string Winner;
         private JToken BoardState;
 
         public Form1()
@@ -92,15 +94,15 @@ namespace Шашки
 
         private async Task WaitForOpponentMove()
         {
-            var opponentMoved = false;
+            var stop = false;
             this.Text = "Waiting for opponent move";
 
-            while (opponentMoved == false)
+            while (stop == false)
             {
                 await GetState();
 
-                opponentMoved = AwaitableMove == "FirstPlayer";
-                if (opponentMoved == false)
+                stop = AwaitableMove == "FirstPlayer" || Finished;
+                if (stop == false)
                     await Task.Delay(100);
             }
 
@@ -119,6 +121,8 @@ namespace Шашки
             var gameInfo = await BackendService.GameGetInfo(GameId);
             GameState = gameInfo["state"];
             AwaitableMove = gameInfo["awaitableMove"];
+            Finished = gameInfo["state"].ToString() == "Finished";
+            Winner = gameInfo["winner"].ToString();
 
             if(!string.IsNullOrEmpty(gameInfo["boardState"]))
                 BoardState = JObject.Parse(gameInfo["boardState"]);
@@ -235,6 +239,11 @@ namespace Шашки
                 else
                 {
                     await WaitForOpponentMove();
+
+                    if (Finished)
+                        if (Winner == "FirstPlayer")
+                            MessageBox.Show("Game over! You won!");
+                        else MessageBox.Show("Game over! You lose!");
                 }
             }
         }

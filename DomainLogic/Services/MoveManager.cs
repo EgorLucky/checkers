@@ -79,7 +79,7 @@ namespace DomainLogic.Services
             
             //find possible moves for opponent
             SwitchAwaitableMove(game);
-            newBoardState.PossibleMoves.AddRange(board.FindPossibleMoves(game)); 
+            newBoardState.PossibleMoves.AddRange(board.FindPossibleMoves(game));
 
             //return data
             return new MoveResult(
@@ -92,8 +92,8 @@ namespace DomainLogic.Services
         {
             int int32AwaitableMove = (int)game.AwaitableMove;
             int32AwaitableMove++;
-            int32AwaitableMove = int32AwaitableMove % Enum.GetValues<AwaitableMove>().Length;
-            game.AwaitableMove = (AwaitableMove)int32AwaitableMove;
+            int32AwaitableMove = int32AwaitableMove % Enum.GetValues<GamePlayer>().Length;
+            game.AwaitableMove = (GamePlayer)int32AwaitableMove;
         }
     }
 }

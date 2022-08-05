@@ -71,7 +71,8 @@ namespace DomainLogic.Services
             return new GameGetInfoResult(
                 State: game.State,
                 AwaitableMove: game.AwaitableMove,
-                BoardState: boardState);
+                BoardState: boardState,
+                Winner: game.Winner);
         }
 
         public async Task<GameRegisterSecondPlayerResult> RegisterSecondPlayer(Guid gameId)
@@ -100,7 +101,7 @@ namespace DomainLogic.Services
         {
             var startResult = await Start(firstPlayerCode);
 
-            if(startResult.Success && startResult.AwaitableMove == AwaitableMove.SecondPlayer)
+            if(startResult.Success && startResult.AwaitableMove == GamePlayer.SecondPlayer)
             {
                 //notify bot
                 await _botNotifier.MoveNotify(startResult.BoardState.GameId);
@@ -126,11 +127,11 @@ namespace DomainLogic.Services
             if ((new Random()).Next(2) % 2 == 0)
             {
                 //opponent move
-                game.AwaitableMove = AwaitableMove.SecondPlayer;
+                game.AwaitableMove = GamePlayer.SecondPlayer;
             }
             else
             {
-                game.AwaitableMove = AwaitableMove.FirstPlayer;
+                game.AwaitableMove = GamePlayer.FirstPlayer;
             }
 
             game.State = GameState.Running;
@@ -155,8 +156,8 @@ namespace DomainLogic.Services
                     Message: "game not found");
 
             var moveFrom = game.FirstPlayerCode == playerCode
-                ? AwaitableMove.FirstPlayer
-                : AwaitableMove.SecondPlayer;
+                ? GamePlayer.FirstPlayer
+                : GamePlayer.SecondPlayer;
 
             if (moveFrom != game.AwaitableMove)
                 return new MoveResult(
@@ -168,6 +169,13 @@ namespace DomainLogic.Services
 
             if (result.Success)
             {
+                if (!result.NewBoardState.PossibleMoves.Any())
+                {
+                    game.FinishDateTime = DateTime.UtcNow;
+                    game.State = GameState.Finished;
+                    game.Winner = moveFrom;
+                }
+
                 await _gameHistoryRepository.SaveBoardState(result.NewBoardState);
                 await _repository.Update(game);
             }
@@ -185,7 +193,7 @@ namespace DomainLogic.Services
         {
             var moveResult = await Move(playerCode, move);
 
-            if (moveResult is { Success: true, AwaitableMove: AwaitableMove.SecondPlayer })
+            if (moveResult is { Success: true, AwaitableMove: GamePlayer.SecondPlayer, NewBoardState.PossibleMoves.Count: not 0 })
                 await _botNotifier.MoveNotify(moveResult.NewBoardState.GameId);
 
             return moveResult;

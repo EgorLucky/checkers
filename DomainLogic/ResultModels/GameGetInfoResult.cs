@@ -7,5 +7,6 @@ namespace DomainLogic.ResultModels
         string Message = "",
         GameState? State = null,
         BoardState BoardState = null,
-        AwaitableMove? AwaitableMove = null);
+        GamePlayer? AwaitableMove = null,
+        GamePlayer? Winner = null);
 }

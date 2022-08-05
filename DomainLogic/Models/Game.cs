@@ -13,7 +13,7 @@ namespace DomainLogic.Models
         public DateTimeOffset? StartDateTime { get; set; }
         public DateTimeOffset? FinishDateTime { get; set; }
         public GameState? State { get; set; }
-        public AwaitableMove? AwaitableMove { get; set; }
+        public GamePlayer? AwaitableMove { get; set; }
         public Guid? FirstPlayerCode { get; internal set; }
         public Guid? SecondPlayerCode { get; internal set; }
         public string CheckerCellColor { get; internal set; }
@@ -22,5 +22,6 @@ namespace DomainLogic.Models
         public string NonPlayableCellColor { get; set; }
         public BoardSide FirstPlayerBoardSide { get; set; }
         public BoardSide SecondPlayerBoardSide { get; set; }
+        public GamePlayer? Winner { get;  set; }
     }
 }

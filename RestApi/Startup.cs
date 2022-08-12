@@ -17,6 +17,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
 using Implementations.ArtificialAnalyzerRandom;
+using Implementations.RepositoriesMongoDB;
+using MongoDB.Driver;
 
 namespace RestApi
 {
@@ -32,15 +34,19 @@ namespace RestApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var mongoClientSettings = MongoClientSettings.FromConnectionString(Configuration.GetValue<string>("checkersMongoConnectionString"));
+
             services
                 .AddTransient<GameService>()
-                .AddTransient<IGameRepository, GameRepository>()
+                .AddTransient<IGameRepository, MongoGameRepository>()
                 .AddTransient<IGameHistoryRepository, GameHistoryRepository>()
                 .AddTransient<MoveManager>()
                 .AddSingleton<IBotNotifier, BotQueueService>()
                 .AddSingleton<Bot>()
                 .AddSingleton<IBotRepository, BotRepository>()
                 .AddSingleton<IArtificialGameAnalyzer, RandomArtificialGameAnalyzer>()
+                .AddSingleton(mongoClientSettings)
+                .AddScoped<GameMongoDBContext>()
                 .AddHttpClient<IGameServiceClient, GameServiceHttpClient>(c => c.BaseAddress = new Uri("https://localhost:5001"));
 
 

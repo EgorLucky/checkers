@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Implementations.Repositorie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Implementations.Mq", "Implementations.Mq\Implementations.Mq.csproj", "{3493C6A1-9443-4CC0-A786-12B731B2EAAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Implementations.ArtificialGameAnalyzerRandom", "Implementations.ArtificialGameAnalyzerRandom\Implementations.ArtificialGameAnalyzerRandom.csproj", "{71E34DD4-726F-455B-8083-0C0EE47CE9B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Implementations.ArtificialGameAnalyzerRandom", "Implementations.ArtificialGameAnalyzerRandom\Implementations.ArtificialGameAnalyzerRandom.csproj", "{71E34DD4-726F-455B-8083-0C0EE47CE9B8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Implementations.RepositoriesMongoDB", "Implementations.RepositoriesMongoDB\Implementations.RepositoriesMongoDB.csproj", "{EBE004C7-55F5-4BB1-B6F2-C9BF8DACB064}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{71E34DD4-726F-455B-8083-0C0EE47CE9B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71E34DD4-726F-455B-8083-0C0EE47CE9B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71E34DD4-726F-455B-8083-0C0EE47CE9B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBE004C7-55F5-4BB1-B6F2-C9BF8DACB064}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBE004C7-55F5-4BB1-B6F2-C9BF8DACB064}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBE004C7-55F5-4BB1-B6F2-C9BF8DACB064}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBE004C7-55F5-4BB1-B6F2-C9BF8DACB064}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+	<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
@@ -12,6 +13,7 @@
     <ProjectReference Include="..\DomainLogic\DomainLogic.csproj" />
     <ProjectReference Include="..\Implementations.ArtificialGameAnalyzerRandom\Implementations.ArtificialGameAnalyzerRandom.csproj" />
     <ProjectReference Include="..\Implementations.Mq\Implementations.Mq.csproj" />
+    <ProjectReference Include="..\Implementations.RepositoriesEF\Implementations.RepositoriesEF.csproj" />
     <ProjectReference Include="..\Implementations.RepositoriesMongoDB\Implementations.RepositoriesMongoDB.csproj" />
     <ProjectReference Include="..\Implementations.Repositories\Implementations.Repositories.csproj" />
   </ItemGroup>

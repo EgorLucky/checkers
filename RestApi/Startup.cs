@@ -19,6 +19,8 @@ using System.Text.Json.Serialization;
 using Implementations.ArtificialAnalyzerRandom;
 using Implementations.RepositoriesMongoDB;
 using MongoDB.Driver;
+using Implementations.RepositoriesEF;
+using Microsoft.EntityFrameworkCore;
 
 namespace RestApi
 {
@@ -38,17 +40,22 @@ namespace RestApi
 
             services
                 .AddTransient<GameService>()
-                .AddTransient<IGameRepository, MongoGameRepository>()
-                .AddTransient<IGameHistoryRepository, GameHistoryRepository>()
+                .AddTransient<IGameRepository, Implementations.RepositoriesEF.GameRepository>()
+                .AddTransient<IGameHistoryRepository, MongoGameHistoryRepository>()
                 .AddTransient<MoveManager>()
                 .AddSingleton<IBotNotifier, BotQueueService>()
                 .AddSingleton<Bot>()
                 .AddSingleton<IBotRepository, BotRepository>()
                 .AddSingleton<IArtificialGameAnalyzer, RandomArtificialGameAnalyzer>()
                 .AddSingleton(mongoClientSettings)
-                .AddScoped<GameMongoDBContext>()
+                .AddTransient<GameBoardStateMongoDBContext>()
+                .AddDbContext<GameDbContext>(options =>
+                    options.UseNpgsql(
+                        Configuration.GetValue<string>("checkerGameConnectionString"),
+                        a => a.MigrationsAssembly(typeof(GameDbContext).Assembly.FullName)))
                 .AddHttpClient<IGameServiceClient, GameServiceHttpClient>(c => c.BaseAddress = new Uri("https://localhost:5001"));
 
+            services.AddAutoMapper(typeof(MappingProfile));
 
             services.AddControllers()
                 .AddJsonOptions(opts =>
@@ -60,6 +67,9 @@ namespace RestApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RestApi", Version = "v1" });
             });
+
+            var context = services.BuildServiceProvider().GetService<GameBoardStateMongoDBContext>();
+            context.ConfigureIndexes();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

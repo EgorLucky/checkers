@@ -17,7 +17,7 @@ namespace DomainLogic.Services
             board.Fill(game.FirstPlayerCheckerColor, game.OpponentCheckerColor, game.FirstPlayerBoardSide, game.SecondPlayerBoardSide);
 
             boardState.Board = board;
-            boardState.PossibleMoves.AddRange(board.FindPossibleMoves(game));
+            boardState.AddPossibleMoves(board.FindPossibleMoves(game));
 
             return boardState;
         }
@@ -32,7 +32,7 @@ namespace DomainLogic.Services
         public async Task<MoveResult> TryMove(Game game, BoardState boardState, MoveVector moveVector)
         {
             var move = default(Move);
-            if ((move = boardState.PossibleMoves.FirstOrDefault(m => m.MoveVector == moveVector)) == null)
+            if ((move = boardState.GetPossibleMoves().FirstOrDefault(m => m.MoveVector == moveVector)) == null)
                 return new MoveResult(
                     Success: false,
                     Message: "wrong move");
@@ -68,7 +68,7 @@ namespace DomainLogic.Services
                 //if there are any capture moves for checker which just did capture
                 if(possibleMoves.Any(p => p.CapturableCheckerCoordinate is not null))
                 {
-                    newBoardState.PossibleMoves.AddRange(possibleMoves);
+                    newBoardState.AddPossibleMoves(possibleMoves);
 
                     return new MoveResult(
                         Success: true,
@@ -79,7 +79,7 @@ namespace DomainLogic.Services
             
             //find possible moves for opponent
             SwitchAwaitableMove(game);
-            newBoardState.PossibleMoves.AddRange(board.FindPossibleMoves(game));
+            newBoardState.AddPossibleMoves(board.FindPossibleMoves(game));
 
             //return data
             return new MoveResult(

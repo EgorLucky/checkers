@@ -169,11 +169,14 @@ namespace DomainLogic.Services
 
             if (result.Success)
             {
-                if (!result.NewBoardState.PossibleMoves.Any())
+                if (!result.NewBoardState.GetPossibleMoves().Any())
                 {
                     game.FinishDateTime = DateTime.UtcNow;
                     game.State = GameState.Finished;
                     game.Winner = moveFrom;
+                    game.AwaitableMove = null;
+
+                    result = result with { AwaitableMove = null };
                 }
 
                 await _gameHistoryRepository.SaveBoardState(result.NewBoardState);
@@ -193,7 +196,7 @@ namespace DomainLogic.Services
         {
             var moveResult = await Move(playerCode, move);
 
-            if (moveResult is { Success: true, AwaitableMove: GamePlayer.SecondPlayer, NewBoardState.PossibleMoves.Count: not 0 })
+            if (moveResult is { Success: true, AwaitableMove: GamePlayer.SecondPlayer })
                 await _botNotifier.MoveNotify(moveResult.NewBoardState.GameId);
 
             return moveResult;

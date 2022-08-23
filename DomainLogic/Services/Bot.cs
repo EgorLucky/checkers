@@ -46,10 +46,11 @@ namespace DomainLogic.Services
             var gameInfo = await _service.GetInfo(gameId);
 
             var boardState = gameInfo.BoardState;
+            var possibleMoves = boardState.GetPossibleMoves().ToList();
             var board = boardState.Board;
             var myColor = board
                             .Cells
-                            .Where(c => c.Coordinate == boardState.PossibleMoves.First().MoveVector.From)
+                            .Where(c => c.Coordinate == possibleMoves.First().MoveVector.From)
                             .Select(c => c.Checker.Color)
                             .First();
 
@@ -67,7 +68,7 @@ namespace DomainLogic.Services
                                                     && c.Checker.Color != myColor)
                                         .ToList();
 
-                var move = await _gameAnalyzer.CreateMove(myCheckersCells, opponentCheckersCells, boardState.PossibleMoves);
+                var move = await _gameAnalyzer.CreateMove(myCheckersCells, opponentCheckersCells, possibleMoves);
 
                 var moveResult = await _service.MakeMove(move, playerGameData.PlayerCode);
 
@@ -82,6 +83,7 @@ namespace DomainLogic.Services
 
                 boardState = moveResult.NewBoardState;
                 board = boardState.Board;
+                possibleMoves = boardState.GetPossibleMoves().ToList();
 
             } while (true);
         }

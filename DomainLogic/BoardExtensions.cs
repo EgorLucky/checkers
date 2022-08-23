@@ -43,7 +43,7 @@ namespace DomainLogic
                         var boardSide = checkerColor == firstPlayerCheckerColor
                             ? firstPlayerBoardSide
                             : secondPlayerBoardSide;
-                        cell.Checker = new Checker(checkerColor, boardSide);
+                        cell.Checker = new Checker(checkerColor, boardSide, PossibleMoves: new());
 
                         currentSideCheckersNotPlacedCount--;
 
@@ -68,7 +68,12 @@ namespace DomainLogic
             {
                 Cells = board.Cells.Select(c => new Cell(c.Color, c.Coordinate with { })
                 {
-                    Checker = c.Checker is not null ? c.Checker with { }: null
+                    Checker = c.Checker is not null ? 
+                        c.Checker with 
+                        { 
+                            PossibleMoves = new()
+                        }
+                        : null
                 })
                 .ToList()
             };

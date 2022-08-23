@@ -37,8 +37,6 @@ namespace Шашки
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-           
-
             Board = new Panel[,]//внесение ячеек в массив для того, чтобы к ним можно было обращаться по индексу
                 {
                 {p00,p10,p20,p30,p40,p50,p60,p70},{p01,p11,p21,p31,p41,p51,p61,p71},
@@ -46,8 +44,6 @@ namespace Шашки
                 {p04,p14,p24,p34,p44,p54,p64,p74},{p05,p15,p25,p35,p45,p55,p65,p75},
                 {p06,p16,p26,p36,p46,p56,p66,p76},{p07,p17,p27,p37,p47,p57,p67,p77}
                 };
-
-            
 
             foreach(var p in Board)
             {
@@ -265,10 +261,11 @@ namespace Шашки
             var vertical = verticals[y];
 
             //get possible moves where moveFrom == selectedpanel coordinates
-            possible_moves = BoardState["possibleMoves"]
-                .Where(pm => pm["moveVector"]["from"]["horizontal"].ToString() == horizontal
-                    && pm["moveVector"]["from"]["vertical"].ToString() == vertical)
-                .ToList();
+            possible_moves = BoardState["board"]["cells"]
+                .Where(c => c["coordinate"]["horizontal"].ToString() == horizontal
+                    && c["coordinate"]["vertical"].ToString() == vertical)
+                .Select(c => c["checker"])
+                .FirstOrDefault()["possibleMoves"].ToList();
 
             richTextBox1.Text = "";
             foreach (var pm in possible_moves) {
@@ -291,11 +288,7 @@ namespace Шашки
 
         private void toolStripButton1_Click(object sender, EventArgs e)//Начать новую игру
         {
-            foreach(Panel cell in Board)
-            {
-                cell.Controls.Clear();//очистка доски
-            }
-            CheckersCreating(null);//создание шашек
+            Form1_Load(sender,e);
 
         }
     }

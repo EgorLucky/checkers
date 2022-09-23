@@ -70,7 +70,7 @@ namespace DomainLogic.Services
 
                 var move = await _gameAnalyzer.CreateMove(myCheckersCells, opponentCheckersCells, possibleMoves);
 
-                var moveResult = await _service.MakeMove(move, playerGameData.PlayerCode);
+                var moveResult = await _service.MakeMove(move, playerGameData.PlayerCode, boardState.Id);
 
                 if (moveResult.Success == false)
                 {

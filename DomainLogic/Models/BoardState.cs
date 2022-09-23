@@ -11,6 +11,11 @@ namespace DomainLogic.Models
         public Board Board { get; set; }
         public DateTimeOffset CreateDateTime { get; set; }
 
+        /// <summary>
+        /// Previous boardStateId or game id in case of first state
+        /// </summary>
+        public Guid PreviousBoardStateId { get; set; }
+
         public IEnumerable<Move> GetPossibleMoves() => Board
                                                         .Cells
                                                         .Where(c => c is { Checker: not null, Checker.PossibleMoves: not null })

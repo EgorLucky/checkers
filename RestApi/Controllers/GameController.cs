@@ -85,17 +85,17 @@ namespace RestApi.Controllers
         }
 
         [HttpPost("move")]
-        public async Task<IActionResult> Move([FromHeader] Guid playerCode, [FromBody] MoveVector move)
+        public async Task<IActionResult> Move([FromHeader] Guid playerCode, [FromHeader] Guid previousBoardStateId, [FromBody] MoveVector move)
         {
-            var moveResult = await _service.Move(playerCode, move);
+            var moveResult = await _service.Move(playerCode, previousBoardStateId, move);
 
             return Ok(moveResult);
         }
 
         [HttpPost("moveWithBot")]
-        public async Task<IActionResult> MoveWithBot([FromHeader] Guid playerCode, [FromBody] MoveVector move)
+        public async Task<IActionResult> MoveWithBot([FromHeader] Guid playerCode, [FromHeader] Guid previousBoardStateId, [FromBody] MoveVector move)
         {
-            var moveResult = await _service.MoveWithBot(playerCode, move);
+            var moveResult = await _service.MoveWithBot(playerCode, previousBoardStateId, move);
 
             return Ok(moveResult);
         }

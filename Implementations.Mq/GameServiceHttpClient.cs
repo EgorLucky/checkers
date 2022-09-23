@@ -33,7 +33,7 @@ namespace Implementations.Mq
                 throw new Exception();
         }
 
-        public async Task<MoveResult> MakeMove(MoveVector move, Guid playerCode)
+        public async Task<MoveResult> MakeMove(MoveVector move, Guid playerCode, Guid previousBoardStateId)
         {
             var httpRequest = new HttpRequestMessage
             {
@@ -43,6 +43,7 @@ namespace Implementations.Mq
             };
 
             httpRequest.Headers.Add("playerCode", playerCode.ToString());
+            httpRequest.Headers.Add("previousBoardStateId", previousBoardStateId.ToString());
             var response = await _client.SendAsync(httpRequest);
             if (response.IsSuccessStatusCode)
             {

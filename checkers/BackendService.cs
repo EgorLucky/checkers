@@ -71,7 +71,7 @@ namespace Шашки
 
             return ToJObject(response);
         }
-        internal static async Task<JObject> GameMoveWithBot(string firstPlayerCode, JToken moveVector)
+        internal static async Task<JObject> GameMoveWithBot(string firstPlayerCode, string previousBoardStateId, JToken moveVector)
         {
             var response = default(byte[]);
 
@@ -81,6 +81,7 @@ namespace Шашки
                 {
                     client.Headers[HttpRequestHeader.ContentType] = "application/json";
                     client.Headers["playerCode"] = firstPlayerCode;
+                    client.Headers["previousBoardStateId"] = previousBoardStateId;
                     response = await client.UploadDataTaskAsync(HostUri + $"/Game/moveWithBot", Encoding.UTF8.GetBytes(moveVector.ToString()));
                 }
             }

@@ -36,6 +36,18 @@ namespace Implementations.RepositoriesMongoDB
                             { nameof(BoardState.GameId), 1 },
                         })
                     )
+                ),
+                new CreateIndexModel<BoardState>(
+                    new BsonDocumentIndexKeysDefinition<BoardState>(
+                        new BsonDocument(new Dictionary<string, object>()
+                        {
+                            { nameof(BoardState.PreviousBoardStateId), 1 },
+                        })
+                    ),
+                    new CreateIndexOptions
+                    {
+                        Unique = true
+                    }
                 )
             });
         }

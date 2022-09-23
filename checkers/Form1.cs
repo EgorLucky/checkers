@@ -215,7 +215,7 @@ namespace Шашки
 
             if (selected_checker != null && moveVector != null) //если шашка выбрана, и либо ячейка, на которую хочет сходить игрок, имеется в коллекции возможных ходов,
             {
-                var gameMoveWithBotResult = await BackendService.GameMoveWithBot(FirstPlayerCode, moveVector);
+                var gameMoveWithBotResult = await BackendService.GameMoveWithBot(FirstPlayerCode, BoardState["id"].ToString(), moveVector);
 
                 if (gameMoveWithBotResult["success"].ToString() != "True")
                 {

@@ -147,7 +147,7 @@ namespace DomainLogic.Services
                 BoardState: boardState);
         }
 
-        public async Task<MoveResult> Move(Guid playerCode, MoveVector move)
+        public async Task<MoveResult> Move(Guid playerCode, Guid previousBoardStateId, MoveVector move)
         {
             var game = await _repository.Get(new Filters.GameGetFilter(PlayerCode: playerCode));
 
@@ -165,6 +165,10 @@ namespace DomainLogic.Services
 
             var boardState = await _gameHistoryRepository.GetLastBoardState(game.Id);
 
+            if(previousBoardStateId != boardState.Id)
+                return new MoveResult(
+                    Message: "wrong previousBoardStateId");
+
             var result = await _moveManager.TryMove(game, boardState, move);
 
             if (result.Success)
@@ -179,6 +183,8 @@ namespace DomainLogic.Services
                     result = result with { AwaitableMove = null };
                 }
 
+                result.NewBoardState.PreviousBoardStateId = previousBoardStateId;
+
                 await _gameHistoryRepository.SaveBoardState(result.NewBoardState);
                 await _repository.Update(game);
             }
@@ -192,9 +198,9 @@ namespace DomainLogic.Services
             return result;
         }
 
-        public async Task<MoveResult> MoveWithBot(Guid playerCode, MoveVector move)
+        public async Task<MoveResult> MoveWithBot(Guid playerCode, Guid previousBoardStateId, MoveVector move)
         {
-            var moveResult = await Move(playerCode, move);
+            var moveResult = await Move(playerCode, previousBoardStateId, move);
 
             if (moveResult is { Success: true, AwaitableMove: GamePlayer.SecondPlayer })
                 await _botNotifier.MoveNotify(moveResult.NewBoardState.GameId);

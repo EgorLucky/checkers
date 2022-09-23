@@ -12,6 +12,7 @@ namespace DomainLogic.Services
         public async Task<BoardState> InitializeHistory(Game game)
         {
             var boardState = CreateBoardState(game.Id);
+            boardState.PreviousBoardStateId = game.Id;
 
             var board = new Board(game.CheckerCellColor, game.NonPlayableCellColor);
             board.Fill(game.FirstPlayerCheckerColor, game.OpponentCheckerColor, game.FirstPlayerBoardSide, game.SecondPlayerBoardSide);

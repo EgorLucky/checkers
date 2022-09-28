@@ -65,5 +65,23 @@ namespace Implementations.GameServiceHttpClient
             else
                 throw new Exception();
         }
+
+        public async Task ReadyToPlay(Guid playerCode)
+        {
+            var httpRequest = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri($"{_client.BaseAddress}Game/readyToPlay")
+            };
+
+            httpRequest.Headers.Add("playerCode", playerCode.ToString());
+            var response = await _client.SendAsync(httpRequest);
+            if (!response.IsSuccessStatusCode)
+            {
+                var responseString = await response.Content.ReadAsStringAsync();
+                throw new Exception(responseString);
+            }
+                
+        }
     }
 }

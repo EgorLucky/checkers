@@ -61,7 +61,7 @@ namespace Шашки
             { 
                 await GetState();
 
-                opponentIsRegistred = GameState == "AllPlayersRegistred";
+                opponentIsRegistred = GameState == "SecondPlayerReadyToPlay";
                 if (opponentIsRegistred == false)
                     await Task.Delay(100);
             }

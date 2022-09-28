@@ -62,6 +62,21 @@ namespace RestApi.Controllers
             return BadRequest(registerSecondUserResult);
         }
 
+        /// <summary>
+        /// Method for second player to set he ready to play
+        /// </summary>
+        /// <param name="playerCode"></param>
+        /// <returns></returns>
+        [HttpPost("readyToPlay")]
+        public async Task<IActionResult> SetReadyToPlay([FromHeader] Guid playerCode)
+        {
+            var result = await _service.SetReadyToPlay(playerCode);
+            if (result.Success)
+                return Ok(result);
+
+            return BadRequest(result);
+        }
+
         [HttpPost("start")]
         public async Task<IActionResult> Start([FromQuery] Guid firstPlayerCode)
         {

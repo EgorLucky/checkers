@@ -4,6 +4,7 @@
     {
         Created,
         AllPlayersRegistred,
+        SecondPlayerReadyToPlay,
         Running,
         Finished
     }

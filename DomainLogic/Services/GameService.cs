@@ -1,4 +1,5 @@
-﻿using DomainLogic.Models;
+﻿using DomainLogic.Filters;
+using DomainLogic.Models;
 using DomainLogic.ParameterModels;
 using DomainLogic.Repositories;
 using DomainLogic.ResultModels;
@@ -97,6 +98,27 @@ namespace DomainLogic.Services
             return new GameRegisterSecondPlayerResult(Code: game.SecondPlayerCode);
         }
 
+        public async Task<SetReadyToPlayResult> SetReadyToPlay(Guid playerCode)
+        {
+            var game = await _repository.Get(new Filters.GameGetFilter(PlayerCode: playerCode));
+
+            if (game is null || game.SecondPlayerCode.GetValueOrDefault() != playerCode)
+                return new SetReadyToPlayResult(
+                    Success: false,
+                    Message: "game not found");
+
+            if (game.SecondPlayerCode is null)
+                return new SetReadyToPlayResult(
+                    Success: false,
+                    Message: "second gamer didn't join");
+
+            game.State = GameState.SecondPlayerReadyToPlay;
+
+            await _repository.Update(game);
+
+            return new SetReadyToPlayResult(Success: true);
+        }
+
         public async Task<GameStartResult> StartWithBot(Guid firstPlayerCode)
         {
             var startResult = await Start(firstPlayerCode);
@@ -112,7 +134,7 @@ namespace DomainLogic.Services
 
         public async Task<GameStartResult> Start(Guid firstPlayerCode)
         {
-            var game = await _repository.Get(new Filters.GameGetFilter(FirstPlayerCode: firstPlayerCode));
+            var game = await _repository.Get(new GameGetFilter(FirstPlayerCode: firstPlayerCode));
 
             if (game == null)
                 return new GameStartResult(
@@ -123,6 +145,11 @@ namespace DomainLogic.Services
                 return new GameStartResult(
                     Success: false,
                     Message: "second gamer didn't join");
+
+            if (game.State is not GameState.SecondPlayerReadyToPlay)
+                return new GameStartResult(
+                    Success: false,
+                    Message: "second gamer doesn't ready to play");
 
             if ((new Random()).Next(2) % 2 == 0)
             {
@@ -149,11 +176,15 @@ namespace DomainLogic.Services
 
         public async Task<MoveResult> Move(Guid playerCode, Guid previousBoardStateId, MoveVector move)
         {
-            var game = await _repository.Get(new Filters.GameGetFilter(PlayerCode: playerCode));
+            var game = await _repository.Get(new GameGetFilter(PlayerCode: playerCode));
 
             if (game == null)
                 return new MoveResult(
                     Message: "game not found");
+
+            if(game.State is not GameState.Running)
+                return new MoveResult(
+                    Message: "game is not started");
 
             var moveFrom = game.FirstPlayerCode == playerCode
                 ? GamePlayer.FirstPlayer
@@ -207,5 +238,6 @@ namespace DomainLogic.Services
 
             return moveResult;
         }
+
     }
 }

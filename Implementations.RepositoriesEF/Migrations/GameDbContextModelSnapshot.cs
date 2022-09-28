@@ -70,7 +70,7 @@ namespace Implementations.RepositoriesEF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Games");
+                    b.ToTable("Games", (string)null);
                 });
 
             modelBuilder.Entity("Implementations.RepositoriesEF.Player", b =>
@@ -89,7 +89,7 @@ namespace Implementations.RepositoriesEF.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("Players");
+                    b.ToTable("Players", (string)null);
                 });
 
             modelBuilder.Entity("Implementations.RepositoriesEF.PlayerGameData", b =>
@@ -102,7 +102,7 @@ namespace Implementations.RepositoriesEF.Migrations
 
                     b.HasKey("PlayerCode", "GameId");
 
-                    b.ToTable("BotPlayerGameData");
+                    b.ToTable("BotPlayerGameData", (string)null);
                 });
 
             modelBuilder.Entity("Implementations.RepositoriesEF.Player", b =>

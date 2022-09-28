@@ -1,8 +1,9 @@
 ﻿using DomainLogic.Models;
 
-namespace Implementations.RepositoriesEF
+namespace Implementations.RepositoriesEF.Entitites
 {
-    public class Game {
+    public class Game
+    {
         public Guid Id { get; set; }
         public DateTimeOffset CreateDateTime { get; set; }
         public DateTimeOffset? StartDateTime { get; set; }
@@ -17,28 +18,5 @@ namespace Implementations.RepositoriesEF
         public BoardSide SecondPlayerBoardSide { get; set; }
         public GamePlayer? Winner { get; set; }
         public List<Player> Players { get; set; }
-    }
-
-    public class Player 
-    {
-        public Player() { }
-        public Player(Guid id, Guid gameId, GamePlayer type)
-        {
-            Id = id;
-            GameId = gameId;
-            Type = type;
-        }
-
-        public Guid Id { get; set; }
-        public Guid GameId { get; set; }
-        public Game Game { get; set; }
-        public GamePlayer Type { get; set; }
-    }
-
-    public class PlayerGameData
-    {
-        public Guid GameId { get; set; }
-
-        public Guid PlayerCode { get; set; }
     }
 }

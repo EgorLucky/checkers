@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Implementations.RepositoriesEF.Entitites;
+using Microsoft.EntityFrameworkCore;
 
 namespace Implementations.RepositoriesEF
 {

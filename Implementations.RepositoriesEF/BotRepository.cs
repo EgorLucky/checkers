@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using DomainLogic.Models;
 using DomainLogic.Repositories;
+using Implementations.RepositoriesEF.Entitites;
 using Microsoft.EntityFrameworkCore;
 using Z.EntityFramework.Plus;
 using DomainPlayerGameData = DomainLogic.Models.PlayerGameData;
+using PlayerGameData = Implementations.RepositoriesEF.Entitites.PlayerGameData;
 
 namespace Implementations.RepositoriesEF
 {

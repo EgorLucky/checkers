@@ -2,9 +2,11 @@
 using DomainLogic.Filters;
 using DomainLogic.Models;
 using DomainLogic.Repositories;
+using Implementations.RepositoriesEF.Entitites;
 using Microsoft.EntityFrameworkCore;
 
 using DomainGame = DomainLogic.Models.Game;
+using Game = Implementations.RepositoriesEF.Entitites.Game;
 
 namespace Implementations.RepositoriesEF
 {

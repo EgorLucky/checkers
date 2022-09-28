@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Implementations.RepositoriesEF.Entitites;
 
 namespace Implementations.RepositoriesEF
 {

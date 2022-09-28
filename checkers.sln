@@ -17,7 +17,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Implementations.ArtificialG
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Implementations.RepositoriesMongoDB", "Implementations.RepositoriesMongoDB\Implementations.RepositoriesMongoDB.csproj", "{EBE004C7-55F5-4BB1-B6F2-C9BF8DACB064}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Implementations.RepositoriesEF", "Implementations.RepositoriesEF\Implementations.RepositoriesEF.csproj", "{57F33587-2327-40ED-A640-B451DE9AE4C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Implementations.RepositoriesEF", "Implementations.RepositoriesEF\Implementations.RepositoriesEF.csproj", "{57F33587-2327-40ED-A640-B451DE9AE4C7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotWorkerService", "BotWorkerService\BotWorkerService.csproj", "{F00D6052-2BEF-4F7E-BEDB-5C4D41912552}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Implementations.MassTransitMq", "Implementations.MassTransitMq\Implementations.MassTransitMq.csproj", "{B26A162C-2034-4AA0-ADEC-6BE2DE0D6072}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Implementations.GameServiceHttpClient", "Implementations.GameServiceHttpClient\Implementations.GameServiceHttpClient.csproj", "{80DF17F4-FD94-4A0B-B2D8-7235FA48EB0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +63,18 @@ Global
 		{57F33587-2327-40ED-A640-B451DE9AE4C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57F33587-2327-40ED-A640-B451DE9AE4C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57F33587-2327-40ED-A640-B451DE9AE4C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F00D6052-2BEF-4F7E-BEDB-5C4D41912552}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F00D6052-2BEF-4F7E-BEDB-5C4D41912552}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F00D6052-2BEF-4F7E-BEDB-5C4D41912552}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F00D6052-2BEF-4F7E-BEDB-5C4D41912552}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B26A162C-2034-4AA0-ADEC-6BE2DE0D6072}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B26A162C-2034-4AA0-ADEC-6BE2DE0D6072}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B26A162C-2034-4AA0-ADEC-6BE2DE0D6072}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B26A162C-2034-4AA0-ADEC-6BE2DE0D6072}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80DF17F4-FD94-4A0B-B2D8-7235FA48EB0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80DF17F4-FD94-4A0B-B2D8-7235FA48EB0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80DF17F4-FD94-4A0B-B2D8-7235FA48EB0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80DF17F4-FD94-4A0B-B2D8-7235FA48EB0D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -10,6 +10,7 @@ namespace Implementations.RepositoriesEF
 
         public DbSet<Game> Games { get; set; }
         public DbSet<Player> Players { get; set; }
+        public DbSet<PlayerGameData> BotPlayerGameData { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,6 +27,10 @@ namespace Implementations.RepositoriesEF
                 entity.HasKey(e => e.Id);
             });
 
+            modelBuilder.Entity<PlayerGameData>(entity => 
+            {
+                entity.HasKey(e => new { e.PlayerCode, e.GameId });
+            });
         }
 
     }

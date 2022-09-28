@@ -1,15 +1,12 @@
-﻿using DomainLogic.Models;
-using DomainLogic.ResultModels;
-using DomainLogic.Services;
-using System;
+﻿using System.Text.Json.Serialization;
 using System.Text.Json;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Text.Json.Serialization;
+using DomainLogic.Services;
+using DomainLogic.ResultModels;
+using DomainLogic.Models;
 
-namespace Implementations.Mq
+namespace Implementations.GameServiceHttpClient
 {
-    public class GameServiceHttpClient: IGameServiceClient
+    public class GameServiceHttpClient : IGameServiceClient
     {
         private readonly HttpClient _client;
 

@@ -34,4 +34,11 @@ namespace Implementations.RepositoriesEF
         public Game Game { get; set; }
         public GamePlayer Type { get; set; }
     }
+
+    public class PlayerGameData
+    {
+        public Guid GameId { get; set; }
+
+        public Guid PlayerCode { get; set; }
+    }
 }

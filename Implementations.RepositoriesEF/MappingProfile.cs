@@ -8,6 +8,9 @@ namespace Implementations.RepositoriesEF
         {
             CreateMap<DomainLogic.Models.Game, Game>()
                 .ReverseMap();
+
+            CreateMap<DomainLogic.Models.PlayerGameData, PlayerGameData>()
+                .ReverseMap();
         }
     }
 }

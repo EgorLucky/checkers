@@ -1,4 +1,5 @@
-﻿using DomainLogic.Repositories;
+﻿using DomainLogic.Models;
+using DomainLogic.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,10 +30,12 @@ namespace DomainLogic.Services
 
             if (registerResult.Success)
             {
-                var gameCode = registerResult.Code.Value;
-                await _botRepository.SavePlayerGameData(new Models.PlayerGameData(
+                var playerCode = registerResult.Code.Value;
+                await _botRepository.SavePlayerGameData(new PlayerGameData(
                     gameId,
-                    gameCode));
+                    playerCode));
+
+                await _service.ReadyToPlay(playerCode);
             }
             else
             {
@@ -42,7 +45,7 @@ namespace DomainLogic.Services
 
         public async Task Move(Guid gameId)
         {
-            var playerGameData = await  _botRepository.Get(gameId);
+            var playerGameData = await _botRepository.Get(gameId);
             var gameInfo = await _service.GetInfo(gameId);
 
             var boardState = gameInfo.BoardState;

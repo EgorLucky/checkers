@@ -50,7 +50,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddScoped<Bot>()
                 .AddScoped<IBotRepository, BotRepository>()
                 .AddSingleton<IArtificialGameAnalyzer, RandomArtificialGameAnalyzer>()
-                .AddHttpClient<IGameServiceClient, GameServiceHttpClient>(c => c.BaseAddress = new Uri("https://localhost:5001"));
+                .AddHttpClient<IGameServiceClient, GameServiceHttpClient>(c => c.BaseAddress = new Uri(configuration.GetValue<string>("checkerGameWebAppHost")));
         services.AddAutoMapper(typeof(MappingProfile));
         services.AddHostedService<Worker>();
     })

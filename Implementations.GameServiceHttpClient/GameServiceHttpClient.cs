@@ -35,7 +35,7 @@ namespace Implementations.GameServiceHttpClient
             var httpRequest = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri($"{_client.BaseAddress}Game/move"),
+                RequestUri = new Uri($"{_client.BaseAddress.OriginalString}/Game/move"),
                 Content = new StringContent(JsonSerializer.Serialize(move), System.Text.Encoding.UTF8, "application/json")
             };
 
@@ -71,7 +71,7 @@ namespace Implementations.GameServiceHttpClient
             var httpRequest = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri($"{_client.BaseAddress}Game/readyToPlay")
+                RequestUri = new Uri($"{_client.BaseAddress.OriginalString}/Game/readyToPlay")
             };
 
             httpRequest.Headers.Add("playerCode", playerCode.ToString());

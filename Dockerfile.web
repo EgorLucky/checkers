@@ -1,0 +1,42 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /app
+
+# copy csproj and restore as distinct layers
+COPY *.sln .
+
+COPY DomainLogic/*.csproj ./DomainLogic/
+COPY Implementations.MassTransitMq/*.csproj ./Implementations.MassTransitMq/
+COPY Implementations.RepositoriesEF/*.csproj ./Implementations.RepositoriesEF/
+COPY Implementations.RepositoriesMongoDB/*.csproj ./Implementations.RepositoriesMongoDB/
+
+COPY BotWorkerService/*.csproj ./BotWorkerService/
+COPY Implementations.Mq/*.csproj ./Implementations.Mq/
+COPY Implementations.Repositories/*.csproj ./Implementations.Repositories/
+COPY Implementations.ArtificialGameAnalyzerRandom/*.csproj ./Implementations.ArtificialGameAnalyzerRandom/
+COPY Implementations.GameServiceHttpClient/*.csproj ./Implementations.GameServiceHttpClient/
+
+COPY RestApi/*.csproj ./RestApi/
+RUN dotnet restore
+
+# copy everything else and build app
+COPY DomainLogic/. ./DomainLogic/
+COPY Implementations.MassTransitMq/. ./Implementations.MassTransitMq/
+COPY Implementations.RepositoriesEF/. ./Implementations.RepositoriesEF/
+COPY Implementations.RepositoriesMongoDB/. ./Implementations.RepositoriesMongoDB/
+
+COPY BotWorkerService/. ./BotWorkerService/
+COPY Implementations.Mq/. ./Implementations.Mq/
+COPY Implementations.Repositories/. ./Implementations.Repositories/
+COPY Implementations.ArtificialGameAnalyzerRandom/. ./Implementations.ArtificialGameAnalyzerRandom/
+COPY Implementations.GameServiceHttpClient/. ./Implementations.GameServiceHttpClient/
+
+COPY RestApi/. ./RestApi/
+
+WORKDIR /app/RestApi
+RUN dotnet publish -c Release -o out
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
+WORKDIR /app
+COPY --from=build /app/RestApi/out ./
+
+ENTRYPOINT ["dotnet", "RestApi.dll"]

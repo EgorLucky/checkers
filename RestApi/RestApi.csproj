@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+	<PackageReference Include="MassTransit" Version="8.0.6" />
+	<PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
+	<PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.3.1" />
+	<PackageReference Include="MassTransit.RabbitMQ" Version="8.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DomainLogic\DomainLogic.csproj" />
+    <ProjectReference Include="..\Implementations.MassTransitMq\Implementations.MassTransitMq.csproj" />
+    <ProjectReference Include="..\Implementations.RepositoriesEF\Implementations.RepositoriesEF.csproj" />
+    <ProjectReference Include="..\Implementations.RepositoriesMongoDB\Implementations.RepositoriesMongoDB.csproj" />
+  </ItemGroup>
+
+</Project>

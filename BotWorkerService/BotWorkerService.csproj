@@ -18,10 +18,6 @@
 </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\DomainLogic\DomainLogic.csproj" />
     <ProjectReference Include="..\Implementations.ArtificialGameAnalyzerRandom\Implementations.ArtificialGameAnalyzerRandom.csproj" />
     <ProjectReference Include="..\Implementations.GameServiceHttpClient\Implementations.GameServiceHttpClient.csproj" />

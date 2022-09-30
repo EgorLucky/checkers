@@ -15,12 +15,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DomainLogic\DomainLogic.csproj" />
-    <ProjectReference Include="..\Implementations.ArtificialGameAnalyzerRandom\Implementations.ArtificialGameAnalyzerRandom.csproj" />
     <ProjectReference Include="..\Implementations.MassTransitMq\Implementations.MassTransitMq.csproj" />
-    <ProjectReference Include="..\Implementations.Mq\Implementations.Mq.csproj" />
     <ProjectReference Include="..\Implementations.RepositoriesEF\Implementations.RepositoriesEF.csproj" />
     <ProjectReference Include="..\Implementations.RepositoriesMongoDB\Implementations.RepositoriesMongoDB.csproj" />
-    <ProjectReference Include="..\Implementations.Repositories\Implementations.Repositories.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32407.343
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "win-client", "checkers\win-client.csproj", "{FFCEDF4C-EE07-460E-887D-0AA942260E7A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestApi", "RestApi\RestApi.csproj", "{FDA0D370-BEA9-4E35-A2ED-18B9A017AD75}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DomainLogic", "DomainLogic\DomainLogic.csproj", "{8F73D201-04DD-4A9C-B058-28B6E6D9B43D}"
@@ -23,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotWorkerService", "BotWork
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Implementations.MassTransitMq", "Implementations.MassTransitMq\Implementations.MassTransitMq.csproj", "{B26A162C-2034-4AA0-ADEC-6BE2DE0D6072}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Implementations.GameServiceHttpClient", "Implementations.GameServiceHttpClient\Implementations.GameServiceHttpClient.csproj", "{80DF17F4-FD94-4A0B-B2D8-7235FA48EB0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Implementations.GameServiceHttpClient", "Implementations.GameServiceHttpClient\Implementations.GameServiceHttpClient.csproj", "{80DF17F4-FD94-4A0B-B2D8-7235FA48EB0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +29,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FFCEDF4C-EE07-460E-887D-0AA942260E7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FFCEDF4C-EE07-460E-887D-0AA942260E7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FFCEDF4C-EE07-460E-887D-0AA942260E7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FFCEDF4C-EE07-460E-887D-0AA942260E7A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FDA0D370-BEA9-4E35-A2ED-18B9A017AD75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FDA0D370-BEA9-4E35-A2ED-18B9A017AD75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDA0D370-BEA9-4E35-A2ED-18B9A017AD75}.Release|Any CPU.ActiveCfg = Release|Any CPU

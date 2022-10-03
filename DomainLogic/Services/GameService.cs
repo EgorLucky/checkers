@@ -38,12 +38,12 @@ namespace DomainLogic.Services
                 CreateDateTime = DateTimeOffset.UtcNow,
                 FirstPlayerCode = Guid.NewGuid(),
                 State = GameState.Created,
-                FirstPlayerCheckerColor = dto.MyCeckerColor,
+                FirstPlayerCheckerColor = dto.MyCheckerColor,
                 OpponentCheckerColor = dto.OpponentCheckerColor,
                 CheckerCellColor = dto.CheckerCellColor,
                 NonPlayableCellColor = dto.NonPlayableCellColor,
-                FirstPlayerBoardSide = dto.FirstPlayerBoardSide,
-                SecondPlayerBoardSide = dto.SecondPlayerBoardSide
+                FirstPlayerBoardSide = dto.MyBoardSide,
+                SecondPlayerBoardSide = dto.OpponentBoardSide
             };
 
             await _repository.Create(game);

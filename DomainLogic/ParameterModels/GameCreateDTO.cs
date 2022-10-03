@@ -12,6 +12,5 @@ namespace DomainLogic.ParameterModels
         string OpponentCheckerColor = "#FFFFFF",
         string CheckerCellColor = "#000000",
         string NonPlayableCellColor = "#FFFFFF",
-        BoardSide MyBoardSide = BoardSide.FirstSide,
-        BoardSide OpponentBoardSide = BoardSide.SecondSide);
+        BoardSide MyBoardSide = BoardSide.FirstSide);
 }

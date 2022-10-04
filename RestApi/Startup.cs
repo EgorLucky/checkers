@@ -89,6 +89,12 @@ namespace RestApi
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RestApi v1"));
             }
 
+            app.UseCors(builder => builder
+                          .AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader()
+                          .WithExposedHeaders());
+
             app.UseHttpsRedirection();
 
             app.UseRouting();

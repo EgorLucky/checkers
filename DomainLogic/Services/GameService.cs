@@ -162,6 +162,7 @@ namespace DomainLogic.Services
             }
 
             game.State = GameState.Running;
+            game.StartDateTime = DateTimeOffset.UtcNow;
 
             await _repository.Update(game);
 

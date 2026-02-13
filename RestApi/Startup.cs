@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 using Implementations.RepositoriesMongoDB;
 using MongoDB.Driver;
@@ -14,6 +13,8 @@ using Microsoft.EntityFrameworkCore;
 using MassTransit;
 using System.Text.Json;
 using Implementations.MassTransitMq;
+using Microsoft.OpenApi;
+using RestApi.Hubs;
 
 namespace RestApi
 {
@@ -43,6 +44,7 @@ namespace RestApi
                 .AddTransient<MoveManager>()
                 .AddScoped<IBotNotifier, MassTransitBotNotifier>()
                 .AddSingleton(mongoClientSettings)
+                .AddScoped<IMongoClient, MongoClient>()
                 .AddTransient<GameBoardStateMongoDBContext>()
                 .AddDbContext<GameDbContext>(options =>
                     options.UseNpgsql(
@@ -62,7 +64,7 @@ namespace RestApi
                 }));
             });
 
-            services.AddAutoMapper(typeof(MappingProfile));
+            services.AddAutoMapper(expr => expr.AddProfile<MappingProfile>());
 
             services.AddControllers()
                 .AddJsonOptions(opts =>

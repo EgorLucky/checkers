@@ -6,9 +6,9 @@ namespace BotWorkerService
 {
     public class MoveGameConsumer : IConsumer<MoveNotify>
     {
-        readonly ILogger<MoveGameConsumer> _logger;
-        readonly Bot _bot;
-        readonly IServiceScope _scope;
+        private readonly ILogger<MoveGameConsumer> _logger;
+        private readonly Bot _bot;
+        private readonly IServiceScope _scope;
 
         public MoveGameConsumer(ILogger<MoveGameConsumer> logger, Bot bot, IServiceProvider provider)
         {

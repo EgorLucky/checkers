@@ -4,7 +4,6 @@ using System.Text.Json;
 using Implementations.MassTransitMq;
 using Implementations.RepositoriesEF;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using DomainLogic.Repositories;
 using DomainLogic.Services;
 using Implementations.ArtificialAnalyzerRandom;
@@ -51,7 +50,7 @@ IHost host = Host.CreateDefaultBuilder(args)
                 .AddScoped<IBotRepository, BotRepository>()
                 .AddSingleton<IArtificialGameAnalyzer, RandomArtificialGameAnalyzer>()
                 .AddHttpClient<IGameServiceClient, GameServiceHttpClient>(c => c.BaseAddress = new Uri(configuration.GetValue<string>("checkerGameWebAppHost")));
-        services.AddAutoMapper(typeof(MappingProfile));
+        services.AddAutoMapper(expr => expr.AddProfile<MappingProfile>());
         services.AddHostedService<Worker>();
     })
     .Build();

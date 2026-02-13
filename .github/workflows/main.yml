@@ -1,0 +1,42 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3    
+    - name: Login to DockerHub Registry
+      run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }} ${{ secrets.DOCKER_REGISTRY_HOST }}
+      
+    - name: Build the Docker image web
+      run: docker build -f Dockerfile.web -t ${{ secrets.DOCKER_REGISTRY_HOST }}/checker-game-web:latest .
+      
+    - name: Build the Docker image worker
+      run: docker build -f Dockerfile.worker -t ${{ secrets.DOCKER_REGISTRY_HOST }}/checker-game-worker:latest .
+      
+    - name: Push web to DockerHub Registry
+      run: docker push ${{ secrets.DOCKER_REGISTRY_HOST }}/checker-game-web:latest
+      
+    - name: Push worker to DockerHub Registry
+      run: docker push ${{ secrets.DOCKER_REGISTRY_HOST }}/checker-game-worker:latest
+
+    - name: Install SSH Key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.PRIVATE_SSH_KEY }} 
+        known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
+    
+    - name: Restart Container
+      run: |
+          TEMP=$(mktemp)
+          echo "${{ secrets.PRIVATE_SSH_KEY }}" > $TEMP
+          ssh -o 'StrictHostKeyChecking no' -i $TEMP root@${{ secrets.HOSTING_SERVER }} exec 'bash -s' < deploy.sh

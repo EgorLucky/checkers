@@ -78,7 +78,7 @@ namespace RestApi.Controllers
         }
 
         [HttpPost("start")]
-        public async Task<IActionResult> Start([FromQuery] Guid firstPlayerCode)
+        public async Task<IActionResult> Start([FromBody] Guid firstPlayerCode)
         {
             var startGameResult = await _service.Start(firstPlayerCode);
 

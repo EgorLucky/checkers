@@ -43,7 +43,7 @@ namespace DomainLogic.Services
                 CheckerCellColor = dto.CheckerCellColor,
                 NonPlayableCellColor = dto.NonPlayableCellColor,
                 FirstPlayerBoardSide = dto.MyBoardSide,
-                SecondPlayerBoardSide = dto.OpponentBoardSide
+                SecondPlayerBoardSide = Enum.GetValues<BoardSide>().First(bs => bs != dto.MyBoardSide)
             };
 
             await _repository.Create(game);
@@ -162,6 +162,7 @@ namespace DomainLogic.Services
             }
 
             game.State = GameState.Running;
+            game.StartDateTime = DateTimeOffset.UtcNow;
 
             await _repository.Update(game);
 

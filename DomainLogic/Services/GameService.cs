@@ -1,13 +1,11 @@
-﻿using DomainLogic.Filters;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using DomainLogic.Filters;
 using DomainLogic.Models;
 using DomainLogic.ParameterModels;
 using DomainLogic.Repositories;
 using DomainLogic.ResultModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DomainLogic.Services
 {
@@ -60,7 +58,7 @@ namespace DomainLogic.Services
 
         public async Task<GameGetInfoResult> GetInfo(Guid gameId)
         {
-            var game = await _repository.Get(new Filters.GameGetFilter(Id: gameId));
+            var game = await _repository.Get(new GameGetFilter(Id: gameId));
 
             if (game == null)
                 return new GameGetInfoResult(
@@ -78,7 +76,7 @@ namespace DomainLogic.Services
 
         public async Task<GameRegisterSecondPlayerResult> RegisterSecondPlayer(Guid gameId)
         {
-            var game = await _repository.Get(new Filters.GameGetFilter(Id: gameId));
+            var game = await _repository.Get(new GameGetFilter(Id: gameId));
 
             if (game == null)
                 return new GameRegisterSecondPlayerResult(
@@ -100,7 +98,7 @@ namespace DomainLogic.Services
 
         public async Task<SetReadyToPlayResult> SetReadyToPlay(Guid playerCode)
         {
-            var game = await _repository.Get(new Filters.GameGetFilter(PlayerCode: playerCode));
+            var game = await _repository.Get(new GameGetFilter(PlayerCode: playerCode));
 
             if (game is null || game.SecondPlayerCode.GetValueOrDefault() != playerCode)
                 return new SetReadyToPlayResult(

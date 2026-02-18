@@ -19,7 +19,7 @@ IHost host = Host.CreateDefaultBuilder(args)
 
             x.AddConsumer<RegisterGameConsumer>();
             x.AddConsumer<MoveGameConsumer>();
-            x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
+            x.UsingRabbitMq((context, config) =>
             {
                 config.Host(rabbitMqConnectionString);
 
@@ -27,16 +27,16 @@ IHost host = Host.CreateDefaultBuilder(args)
                 {
                     ep.PrefetchCount = 16;
                     //ep.UseMessageRetry(r => r.Interval(2, 100));
-                    ep.ConfigureConsumer<RegisterGameConsumer>(provider);
+                    ep.ConfigureConsumer<RegisterGameConsumer>(context);
                 });
 
                 config.ReceiveEndpoint(nameof(MoveNotify), ep =>
                 {
                     ep.PrefetchCount = 16;
                     //ep.UseMessageRetry(r => r.Interval(2, 100));
-                    ep.ConfigureConsumer<MoveGameConsumer>(provider);
+                    ep.ConfigureConsumer<MoveGameConsumer>(context);
                 });
-            }));
+            });
         });
         
         services.AddDbContext<GameDbContext>(options => options.UseNpgsql(configuration.GetValue<string>("checkerGameConnectionString")));

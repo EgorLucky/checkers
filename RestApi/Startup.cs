@@ -49,10 +49,10 @@ namespace RestApi
 
             services.AddMassTransit(x =>
             {
-                x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
+                x.UsingRabbitMq( (_, config) =>
                 {
                     config.Host(rabbitMqConnectionString);
-                }));
+                });
             });
 
             services.AddAutoMapper(expr => expr.AddProfile<MappingProfile>());

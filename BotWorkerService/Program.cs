@@ -1,6 +1,5 @@
 using BotWorkerService;
 using MassTransit;
-using System.Text.Json;
 using Implementations.MassTransitMq;
 using Implementations.RepositoriesEF;
 using Microsoft.EntityFrameworkCore;
@@ -8,15 +7,23 @@ using DomainLogic.Repositories;
 using DomainLogic.Services;
 using Implementations.ArtificialAnalyzerRandom;
 using Implementations.GameServiceHttpClient;
+using Serilog;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
     {
         var configuration = hostContext.Configuration;
+        
+        var postgresConnectionString = configuration.GetValue<string>("checkerGameConnectionString");
+        var rabbitMqConnectionString = configuration.GetValue<string>("checkerGameRabbitMqConnectionString");
+        var webAppHostUri = configuration.GetValue<string>("checkerGameWebAppHost");
+        
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss:fff} {Level:u3}] [{ThreadId}] {Message}{NewLine}{Exception}")
+            .CreateLogger();
+        
         services.AddMassTransit(x =>
         {
-            var rabbitMqConnectionString = configuration.GetValue<string>("checkerGameRabbitMqConnectionString");
-
             x.AddConsumer<RegisterGameConsumer>();
             x.AddConsumer<MoveGameConsumer>();
             x.UsingRabbitMq((context, config) =>
@@ -39,13 +46,14 @@ IHost host = Host.CreateDefaultBuilder(args)
             });
         });
         
-        services.AddDbContext<GameDbContext>(options => options.UseNpgsql(configuration.GetValue<string>("checkerGameConnectionString")));
+        services.AddDbContext<GameDbContext>(options => options.UseNpgsql(postgresConnectionString));
         services.AddScoped<Bot>()
                 .AddScoped<IBotRepository, BotRepository>()
                 .AddSingleton<IArtificialGameAnalyzer, RandomArtificialGameAnalyzer>()
-                .AddHttpClient<IGameServiceClient, GameServiceHttpClient>(c => c.BaseAddress = new Uri(configuration.GetValue<string>("checkerGameWebAppHost")));
+                .AddHttpClient<IGameServiceClient, GameServiceHttpClient>(c => c.BaseAddress = new Uri(webAppHostUri));
         services.AddAutoMapper(expr => expr.AddProfile<MappingProfile>());
         services.AddHostedService<Worker>();
+        services.AddSerilog();
     })
     .Build();
 

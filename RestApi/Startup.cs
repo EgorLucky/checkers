@@ -13,17 +13,13 @@ using Microsoft.EntityFrameworkCore;
 using MassTransit;
 using Implementations.MassTransitMq;
 using Microsoft.OpenApi;
+using Serilog;
 
 namespace RestApi
 {
-    public class Startup
+    public class Startup(IConfiguration configuration)
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; } = configuration;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -32,6 +28,10 @@ namespace RestApi
             var mongoDbConnectionString = Configuration.GetValue<string>("checkersMongoConnectionString");
             var rabbitMqConnectionString = Configuration.GetValue<string>("checkerGameRabbitMqConnectionString");
             var mongoClientSettings = MongoClientSettings.FromConnectionString(mongoDbConnectionString);
+            
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss:fff} {Level:u3}] [{ThreadId}] {Message}{NewLine}{Exception}")
+                .CreateLogger();
 
             services
                 .AddTransient<GameService>()
@@ -45,7 +45,8 @@ namespace RestApi
                 .AddDbContext<GameDbContext>(options =>
                     options.UseNpgsql(
                         postgresConnectionString,
-                        a => a.MigrationsAssembly(typeof(GameDbContext).Assembly.FullName)));
+                        a => a.MigrationsAssembly(typeof(GameDbContext).Assembly.FullName)))
+                .AddSerilog();
 
             services.AddMassTransit(x =>
             {
@@ -68,8 +69,6 @@ namespace RestApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RestApi", Version = "v1" });
             });
 
-            var context = services.BuildServiceProvider().GetService<GameBoardStateMongoDBContext>();
-            context.ConfigureIndexes();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -84,7 +83,10 @@ namespace RestApi
             
             using var scope = app.ApplicationServices.CreateScope();
             using var dbContext = scope.ServiceProvider.GetService<GameDbContext>();
-            dbContext.Database.MigrateAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            dbContext.Database.Migrate();
+            
+            var mongoContext = scope.ServiceProvider.GetService<GameBoardStateMongoDBContext>();
+            mongoContext.ConfigureIndexes();
 
             app.UseCors(builder => builder
                           .AllowAnyOrigin()

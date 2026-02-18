@@ -25,9 +25,4 @@ namespace Implementations.MassTransitMq
 
     public record MoveNotify(Guid GameId);
     public record RegisterNotify(Guid GameId);
-    public record RabbitMqConfig(
-        string Host,
-        string Username,
-        string Password,
-        string VirtualHost);
 }

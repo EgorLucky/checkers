@@ -15,19 +15,13 @@ IHost host = Host.CreateDefaultBuilder(args)
         var configuration = hostContext.Configuration;
         services.AddMassTransit(x =>
         {
-            var rabbitMqConfigJson = configuration.GetValue<string>("checkerGameRabbitMqConfig");
-            var RabbitMqConfig = JsonSerializer.Deserialize<RabbitMqConfig>(rabbitMqConfigJson);
+            var rabbitMqConnectionString = configuration.GetValue<string>("checkerGameRabbitMqConnectionString");
 
             x.AddConsumer<RegisterGameConsumer>();
             x.AddConsumer<MoveGameConsumer>();
             x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
             {
-                config.Host(RabbitMqConfig.Host, RabbitMqConfig.VirtualHost, h =>
-                {
-                    h.Username(RabbitMqConfig.Username);
-                    h.Password(RabbitMqConfig.Password);
-
-                });
+                config.Host(rabbitMqConnectionString);
 
                 config.ReceiveEndpoint(nameof(RegisterNotify), ep =>
                 {

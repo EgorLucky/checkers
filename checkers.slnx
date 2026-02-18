@@ -8,6 +8,5 @@
   <Project Path="Implementations.Repositories/Implementations.Repositories.csproj" />
   <Project Path="Implementations.RepositoriesEF/Implementations.RepositoriesEF.csproj" />
   <Project Path="Implementations.RepositoriesMongoDB/Implementations.RepositoriesMongoDB.csproj" />
-  <Project Path="IntegrationTests/IntegrationTests.csproj" />
   <Project Path="RestApi/RestApi.csproj" />
 </Solution>

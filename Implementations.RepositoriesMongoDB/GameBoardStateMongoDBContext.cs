@@ -1,5 +1,7 @@
 ﻿using DomainLogic.Models;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 
 namespace Implementations.RepositoriesMongoDB
@@ -28,6 +30,7 @@ namespace Implementations.RepositoriesMongoDB
 
         public void ConfigureIndexes()
         {
+            BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
             BoardStates.Indexes.CreateMany(new List<CreateIndexModel<BoardState>>
             {
                 new (

@@ -5,15 +5,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 using Implementations.RepositoriesMongoDB;
 using MongoDB.Driver;
 using Implementations.RepositoriesEF;
 using Microsoft.EntityFrameworkCore;
 using MassTransit;
-using System.Text.Json;
 using Implementations.MassTransitMq;
+using Microsoft.OpenApi;
 
 namespace RestApi
 {
@@ -22,19 +21,17 @@ namespace RestApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
-            var rabbitMqConfigJson = Configuration.GetValue<string>("checkerGameRabbitMqConfig");
-            RabbitMqConfig = JsonSerializer.Deserialize<RabbitMqConfig>(rabbitMqConfigJson);
         }
 
         public IConfiguration Configuration { get; }
 
-        public RabbitMqConfig RabbitMqConfig { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var mongoClientSettings = MongoClientSettings.FromConnectionString(Configuration.GetValue<string>("checkersMongoConnectionString"));
+            var postgresConnectionString = Configuration.GetValue<string>("checkerGameConnectionString");
+            var mongoDbConnectionString = Configuration.GetValue<string>("checkersMongoConnectionString");
+            var rabbitMqConnectionString = Configuration.GetValue<string>("checkerGameRabbitMqConnectionString");
+            var mongoClientSettings = MongoClientSettings.FromConnectionString(mongoDbConnectionString);
 
             services
                 .AddTransient<GameService>()
@@ -43,26 +40,22 @@ namespace RestApi
                 .AddTransient<MoveManager>()
                 .AddScoped<IBotNotifier, MassTransitBotNotifier>()
                 .AddSingleton(mongoClientSettings)
+                .AddScoped<IMongoClient, MongoClient>()
                 .AddTransient<GameBoardStateMongoDBContext>()
                 .AddDbContext<GameDbContext>(options =>
                     options.UseNpgsql(
-                        Configuration.GetValue<string>("checkerGameConnectionString"),
+                        postgresConnectionString,
                         a => a.MigrationsAssembly(typeof(GameDbContext).Assembly.FullName)));
 
             services.AddMassTransit(x =>
             {
                 x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
                 {
-                    config.Host(RabbitMqConfig.Host, RabbitMqConfig.VirtualHost, h =>
-                    {
-                        h.Username(RabbitMqConfig.Username);
-                        h.Password(RabbitMqConfig.Password);
-
-                    });
+                    config.Host(rabbitMqConnectionString);
                 }));
             });
 
-            services.AddAutoMapper(typeof(MappingProfile));
+            services.AddAutoMapper(expr => expr.AddProfile<MappingProfile>());
 
             services.AddControllers()
                 .AddJsonOptions(opts =>
@@ -88,6 +81,10 @@ namespace RestApi
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RestApi v1"));
             }
+            
+            using var scope = app.ApplicationServices.CreateScope();
+            using var dbContext = scope.ServiceProvider.GetService<GameDbContext>();
+            dbContext.Database.MigrateAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
             app.UseCors(builder => builder
                           .AllowAnyOrigin()

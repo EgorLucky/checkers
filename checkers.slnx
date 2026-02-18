@@ -1,0 +1,12 @@
+<Solution>
+  <Project Path="BotWorkerService/BotWorkerService.csproj" />
+  <Project Path="DomainLogic/DomainLogic.csproj" />
+  <Project Path="Implementations.ArtificialGameAnalyzerRandom/Implementations.ArtificialGameAnalyzerRandom.csproj" />
+  <Project Path="Implementations.GameServiceHttpClient/Implementations.GameServiceHttpClient.csproj" />
+  <Project Path="Implementations.MassTransitMq/Implementations.MassTransitMq.csproj" />
+  <Project Path="Implementations.Mq/Implementations.Mq.csproj" />
+  <Project Path="Implementations.Repositories/Implementations.Repositories.csproj" />
+  <Project Path="Implementations.RepositoriesEF/Implementations.RepositoriesEF.csproj" />
+  <Project Path="Implementations.RepositoriesMongoDB/Implementations.RepositoriesMongoDB.csproj" />
+  <Project Path="RestApi/RestApi.csproj" />
+</Solution>

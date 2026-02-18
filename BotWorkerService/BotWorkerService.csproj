@@ -1,20 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-BotWorkerService-F6BB9224-1C4C-4297-9527-1B2CD534A23E</UserSecretsId>
   </PropertyGroup>
 
 <ItemGroup>
+	<PackageReference Include="AutoMapper" Version="16.0.0" />
 	<PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
-	<PackageReference Include="MassTransit.RabbitMQ" Version="8.0.3" />
-	<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-	<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
-	<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-	<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.5" />
-	<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+	<PackageReference Include="MassTransit.RabbitMQ" Version="9.0.1" />
+	<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
+	<PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.3" />
+	<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.3" />
+	<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
 </ItemGroup>
 
   <ItemGroup>

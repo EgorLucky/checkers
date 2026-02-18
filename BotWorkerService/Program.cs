@@ -4,7 +4,6 @@ using System.Text.Json;
 using Implementations.MassTransitMq;
 using Implementations.RepositoriesEF;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using DomainLogic.Repositories;
 using DomainLogic.Services;
 using Implementations.ArtificialAnalyzerRandom;
@@ -16,19 +15,13 @@ IHost host = Host.CreateDefaultBuilder(args)
         var configuration = hostContext.Configuration;
         services.AddMassTransit(x =>
         {
-            var rabbitMqConfigJson = configuration.GetValue<string>("checkerGameRabbitMqConfig");
-            var RabbitMqConfig = JsonSerializer.Deserialize<RabbitMqConfig>(rabbitMqConfigJson);
+            var rabbitMqConnectionString = configuration.GetValue<string>("checkerGameRabbitMqConnectionString");
 
             x.AddConsumer<RegisterGameConsumer>();
             x.AddConsumer<MoveGameConsumer>();
             x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
             {
-                config.Host(RabbitMqConfig.Host, RabbitMqConfig.VirtualHost, h =>
-                {
-                    h.Username(RabbitMqConfig.Username);
-                    h.Password(RabbitMqConfig.Password);
-
-                });
+                config.Host(rabbitMqConnectionString);
 
                 config.ReceiveEndpoint(nameof(RegisterNotify), ep =>
                 {
@@ -51,7 +44,7 @@ IHost host = Host.CreateDefaultBuilder(args)
                 .AddScoped<IBotRepository, BotRepository>()
                 .AddSingleton<IArtificialGameAnalyzer, RandomArtificialGameAnalyzer>()
                 .AddHttpClient<IGameServiceClient, GameServiceHttpClient>(c => c.BaseAddress = new Uri(configuration.GetValue<string>("checkerGameWebAppHost")));
-        services.AddAutoMapper(typeof(MappingProfile));
+        services.AddAutoMapper(expr => expr.AddProfile<MappingProfile>());
         services.AddHostedService<Worker>();
     })
     .Build();

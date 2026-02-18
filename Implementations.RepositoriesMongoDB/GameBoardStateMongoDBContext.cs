@@ -1,35 +1,39 @@
 ﻿using DomainLogic.Models;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 
 namespace Implementations.RepositoriesMongoDB
 {
-    public class GameBoardStateMongoDBContext: MongoClient
+    public class GameBoardStateMongoDBContext
     {
-        private const string _databaseName = "checkers";
+        private const string DATABASE_NAME = "checkers";
+        
+        private readonly IMongoClient _mongoClient;
         private readonly IMongoDatabase _database;
-        private IMongoCollection<BoardState> _boardStates;
 
-        public GameBoardStateMongoDBContext(MongoClientSettings settings) : base(settings) 
+        public GameBoardStateMongoDBContext(IMongoClient mongoMongoClient)
         {
-            _database = this.GetDatabase(_databaseName);
+            _mongoClient = mongoMongoClient;
+            _database = _mongoClient.GetDatabase(DATABASE_NAME);
         }
 
         public IMongoCollection<BoardState> BoardStates 
         {
             get
-            { 
-                if(_boardStates == null)
-                    _boardStates = _database.GetCollection<BoardState>(nameof(BoardStates));
-                return _boardStates;
+            {
+                field ??= _database.GetCollection<BoardState>(nameof(BoardStates));
+                return field;
             } 
         }
 
         public void ConfigureIndexes()
         {
-            var boardStateIndexCreateResult = BoardStates.Indexes.CreateMany(new List<CreateIndexModel<BoardState>>
+            BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
+            BoardStates.Indexes.CreateMany(new List<CreateIndexModel<BoardState>>
             {
-                new CreateIndexModel<BoardState>(
+                new (
                     new BsonDocumentIndexKeysDefinition<BoardState>(
                         new BsonDocument(new Dictionary<string, object>()
                         {
@@ -37,7 +41,7 @@ namespace Implementations.RepositoriesMongoDB
                         })
                     )
                 ),
-                new CreateIndexModel<BoardState>(
+                new (
                     new BsonDocumentIndexKeysDefinition<BoardState>(
                         new BsonDocument(new Dictionary<string, object>()
                         {

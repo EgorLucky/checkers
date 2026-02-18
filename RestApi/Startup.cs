@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using MassTransit;
 using Implementations.MassTransitMq;
 using Microsoft.OpenApi;
-using RestApi.Hubs;
 
 namespace RestApi
 {

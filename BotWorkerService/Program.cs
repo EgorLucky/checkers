@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using BotWorkerService;
 using MassTransit;
 using Implementations.MassTransitMq;
@@ -7,6 +9,8 @@ using DomainLogic.Repositories;
 using DomainLogic.Services;
 using Implementations.ArtificialAnalyzerRandom;
 using Implementations.GameServiceHttpClient;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Refit;
 using Serilog;
 
 IHost host = Host.CreateDefaultBuilder(args)
@@ -50,7 +54,20 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddScoped<Bot>()
                 .AddScoped<IBotRepository, BotRepository>()
                 .AddSingleton<IArtificialGameAnalyzer, RandomArtificialGameAnalyzer>()
-                .AddHttpClient<IGameServiceClient, GameServiceHttpClient>(c => c.BaseAddress = new Uri(webAppHostUri));
+                .AddScoped<IGameServiceClient, GameServiceHttpClient>()
+                .AddRefitClient<IGameServiceRefitHttpClient>(new RefitSettings
+                {
+                    ContentSerializer = new SystemTextJsonContentSerializer(
+                        new JsonSerializerOptions
+                    {
+                        PropertyNamingPolicy =  JsonNamingPolicy.CamelCase,
+                        Converters = { new JsonStringEnumConverter() }
+                    })
+                })
+                .ConfigureHttpClient(c =>
+                {
+                    c.BaseAddress = new Uri(webAppHostUri);
+                });
         services.AddAutoMapper(expr => expr.AddProfile<MappingProfile>());
         services.AddHostedService<Worker>();
         services.AddSerilog();

@@ -10,4 +10,8 @@
     <ProjectReference Include="..\DomainLogic\DomainLogic.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Refit" Version="10.0.1" />
+  </ItemGroup>
+
 </Project>

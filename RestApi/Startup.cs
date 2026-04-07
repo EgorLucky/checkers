@@ -80,13 +80,6 @@ namespace RestApi
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RestApi v1"));
             }
-            
-            using var scope = app.ApplicationServices.CreateScope();
-            using var dbContext = scope.ServiceProvider.GetService<GameDbContext>();
-            dbContext.Database.Migrate();
-            
-            var mongoContext = scope.ServiceProvider.GetService<GameBoardStateMongoDBContext>();
-            mongoContext.ConfigureIndexes();
 
             app.UseCors(builder => builder
                           .AllowAnyOrigin()

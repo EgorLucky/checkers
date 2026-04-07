@@ -39,7 +39,7 @@ namespace RestApi.Controllers
         }
 
         [HttpGet("getInfo")]
-        public async Task<IActionResult> GetRegistrationStatus([FromQuery] Guid gameId)
+        public async Task<IActionResult> GetGameInfo([FromQuery] Guid gameId)
         {
             var startGameResult = await _service.GetInfo(gameId);
 

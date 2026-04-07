@@ -14,6 +14,7 @@ COPY Implementations.Mq/*.csproj ./Implementations.Mq/
 COPY Implementations.Repositories/*.csproj ./Implementations.Repositories/
 COPY Implementations.ArtificialGameAnalyzerRandom/*.csproj ./Implementations.ArtificialGameAnalyzerRandom/
 COPY Implementations.GameServiceHttpClient/*.csproj ./Implementations.GameServiceHttpClient/
+COPY MigrationTool/*.csproj ./MigrationTool/
 
 COPY RestApi/*.csproj ./RestApi/
 RUN dotnet restore
@@ -29,6 +30,7 @@ COPY Implementations.Mq/. ./Implementations.Mq/
 COPY Implementations.Repositories/. ./Implementations.Repositories/
 COPY Implementations.ArtificialGameAnalyzerRandom/. ./Implementations.ArtificialGameAnalyzerRandom/
 COPY Implementations.GameServiceHttpClient/. ./Implementations.GameServiceHttpClient/
+COPY MigrationTool/. ./MigrationTool/
 
 COPY RestApi/. ./RestApi/
 

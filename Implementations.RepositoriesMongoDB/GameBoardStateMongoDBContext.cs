@@ -15,6 +15,7 @@ namespace Implementations.RepositoriesMongoDB
 
         public GameBoardStateMongoDBContext(IMongoClient mongoMongoClient)
         {
+            MongoInitializator.Initialize();
             _mongoClient = mongoMongoClient;
             _database = _mongoClient.GetDatabase(DATABASE_NAME);
         }
@@ -28,10 +29,9 @@ namespace Implementations.RepositoriesMongoDB
             } 
         }
 
-        public void ConfigureIndexes()
+        public async Task ConfigureIndexesAsync()
         {
-            BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
-            BoardStates.Indexes.CreateMany(new List<CreateIndexModel<BoardState>>
+            await BoardStates.Indexes.CreateManyAsync(new List<CreateIndexModel<BoardState>>
             {
                 new (
                     new BsonDocumentIndexKeysDefinition<BoardState>(
@@ -54,6 +54,23 @@ namespace Implementations.RepositoriesMongoDB
                     }
                 )
             });
+        }
+    }
+
+    static class MongoInitializator
+    {
+        private static bool _initialized = false;
+        private static readonly Lock _locker = new();
+        internal static void Initialize()
+        {
+            if (_initialized) return;
+            
+            lock (_locker)
+            {
+                if (_initialized) return;
+                BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
+                _initialized = true;
+            }
         }
     }
 }

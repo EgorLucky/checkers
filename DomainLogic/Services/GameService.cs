@@ -149,7 +149,7 @@ namespace DomainLogic.Services
                     Success: false,
                     Message: "second gamer doesn't ready to play");
 
-            if ((new Random()).Next(2) % 2 == 0)
+            if (Random.Shared.Next(2) % 2 == 0)
             {
                 //opponent move
                 game.AwaitableMove = GamePlayer.SecondPlayer;

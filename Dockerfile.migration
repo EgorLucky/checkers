@@ -34,11 +34,11 @@ COPY MigrationTool/. ./MigrationTool/
 
 COPY BotWorkerService/. ./BotWorkerService/
 
-WORKDIR /app/BotWorkerService
+WORKDIR /app/MigrationTool
 RUN dotnet publish -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
-COPY --from=build /app/BotWorkerService/out ./
+COPY --from=build /app/MigrationTool/out ./
 
-ENTRYPOINT ["dotnet", "BotWorkerService.dll"]
+ENTRYPOINT ["dotnet", "MigrationTool.dll"]

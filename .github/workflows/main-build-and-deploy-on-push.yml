@@ -24,6 +24,12 @@ jobs:
       
     - name: Push worker to DockerHub Registry
       run: docker push ${{ secrets.DOCKER_REGISTRY_HOST }}/checker-game-worker:latest
+
+    - name: Build the Docker image migration
+      run: docker build -f Dockerfile.migration -t ${{ secrets.DOCKER_REGISTRY_HOST }}/checker-game-migration:latest .
+
+    - name: Push migration to DockerHub Registry
+      run: docker push ${{ secrets.DOCKER_REGISTRY_HOST }}/checker-game-migration:latest
   
   deploy:
     runs-on: ubuntu-latest

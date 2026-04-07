@@ -20,3 +20,6 @@ jobs:
       
     - name: Build the Docker image worker
       run: docker build -f Dockerfile.worker -t ${{ secrets.DOCKER_REGISTRY_HOST }}/checker-game-worker:latest .
+
+    - name: Build the Docker image migration
+      run: docker build -f Dockerfile.migration -t ${{ secrets.DOCKER_REGISTRY_HOST }}/checker-game-migration:latest .

@@ -12,7 +12,6 @@
     <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
     <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.3.1" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="8.5.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.3" />
   </ItemGroup>
 
   <ItemGroup>

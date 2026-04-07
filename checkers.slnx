@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="AspireAppHost/AspireAppHost.csproj" />
   <Project Path="BotWorkerService/BotWorkerService.csproj" />
   <Project Path="DomainLogic/DomainLogic.csproj" />
   <Project Path="Implementations.ArtificialGameAnalyzerRandom/Implementations.ArtificialGameAnalyzerRandom.csproj" />
@@ -10,4 +11,5 @@
   <Project Path="Implementations.RepositoriesMongoDB/Implementations.RepositoriesMongoDB.csproj" />
   <Project Path="MigrationTool/MigrationTool.csproj" />
   <Project Path="RestApi/RestApi.csproj" />
+  <Project Path="Tests\Tests.csproj" />
 </Solution>

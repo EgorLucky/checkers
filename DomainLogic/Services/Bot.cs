@@ -1,9 +1,7 @@
 ﻿using DomainLogic.Models;
 using DomainLogic.Repositories;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DomainLogic.Services
@@ -30,7 +28,7 @@ namespace DomainLogic.Services
 
             if (registerResult.Success)
             {
-                var playerCode = registerResult.Code.Value;
+                var playerCode = registerResult.Code!.Value;
                 await _botRepository.SavePlayerGameData(new PlayerGameData(
                     gameId,
                     playerCode));
